@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
 
-Facade
+Diet
 ======
 
-Facade tries to create a jar from all of the jars used by a project.
-The facade jar should contain only classes the project actually uses, nothing else.
+Diet tries to create a jar from all of the jars used by a project.
+The result jar should contain only classes the project actually uses, nothing else.
 
 This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/amaranthius/facade-maven), an eclpse plugin and perhaps a web project.
 
@@ -14,7 +14,7 @@ It's main target group is currently android development as space conservation is
 
 ### Source Dependency Resolution:
 
-Facade can resolve the dependencies of .java source files. 
+Diet can resolve the dependencies of .java source files. 
 Currently like this:
 
 ```java
@@ -25,7 +25,7 @@ final Set<ClassName> dependencies = Dependencies
 
 ### Binary Class Dependency Resolution:
 
-Facade can also resolve the dependencies of compiled binary .class files:
+Diet can also resolve the dependencies of compiled binary .class files:
 
 ```java
 final Set<ClassName> dependencies = Dependencies
@@ -51,7 +51,7 @@ You can also set the output dir for the minimizer, have [a look at the wiki](htt
 
 ### Component Events:
 
-Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
+Diet can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
 resolving the dependencies of a binary class you can:
 
 ```java
