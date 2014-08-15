@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
+[![Build Status](https://travis-ci.org/Codarama/Diet.svg?branch=master)](https://travis-ci.org/Codarama/Diet)
+[![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
 
 Project Ownership Change
 ======
