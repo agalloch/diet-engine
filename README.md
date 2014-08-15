@@ -1,5 +1,12 @@
 [![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
 
+Project Ownership Change
+======
+
+This project repo is currently changing ownership and might be unstable.
+We recommend using [the old one ](http://ayld.github.io/Facade/) until the transfer is complete.
+This file will be updated when it is
+
 Diet
 ======
 
