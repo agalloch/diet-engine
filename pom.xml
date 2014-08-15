@@ -2,12 +2,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>net.ayld.facade</groupId>
-	<artifactId>facade</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>net.ayld.diet</groupId>
+	<artifactId>diet</artifactId>
+	<version>v0.6-alpha.1-SNAPSHOT</version>
 	
 	<packaging>jar</packaging>
-	<name>Facade</name>
+	<name>Diet</name>
 	
 	<properties>
 		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
@@ -96,7 +96,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>facade</finalName>
+		<finalName>diet</finalName>
 
 		<plugins>
 			<plugin>

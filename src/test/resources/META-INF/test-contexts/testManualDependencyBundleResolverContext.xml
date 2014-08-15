@@ -11,21 +11,21 @@
 		
 		<import resource="classpath:META-INF/common.xml" />
 		
-		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
+		<bean id="jarExploder" class="net.ayld.diet.bundle.impl.ManualJarExploder">
 			<property name="workDir" value="#{workDir}"/>
 			<property name="eventBus">
 				<bean class="com.google.common.eventbus.EventBus"/>
 			</property>
 		</bean>
 		
-		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
+		<bean id="bundleResolver" class="net.ayld.diet.dependency.resolver.impl.ManualDependencyBundleResolver">
 			<property name="jarExploder" ref="jarExploder"/>
 			<property name="dependencyMatcher">
-				<bean class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+				<bean class="net.ayld.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 					<property name="conditions">
 						<util:set>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+							<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+							<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
 						</util:set>
 					</property>
 				</bean>

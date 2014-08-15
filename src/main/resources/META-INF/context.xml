@@ -38,7 +38,7 @@
 	
 	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 	
-	<bean id="parentListenableComponent" class="net.ayld.facade.component.ListenableComponent" abstract="true">
+	<bean id="parentListenableComponent" class="net.ayld.diet.component.ListenableComponent" abstract="true">
 		<property name="eventBus" ref="statusUpdateEventBus"/>
 	</bean>
 	

@@ -11,11 +11,11 @@
 
 
 		
-		<bean id="dependencyMatcherStrategy" class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+		<bean id="dependencyMatcherStrategy" class="net.ayld.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 			<property name="conditions">
 				<util:set>
-					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
-					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
 				</util:set>
 			</property>
 		</bean>

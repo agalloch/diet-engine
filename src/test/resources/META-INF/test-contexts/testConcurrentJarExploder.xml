@@ -11,7 +11,7 @@
 		
 		<import resource="classpath:META-INF/common.xml" />
 		
-		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.CuncurrentManualJarExploder">
+		<bean id="jarExploder" class="net.ayld.diet.bundle.impl.CuncurrentManualJarExploder">
 			<property name="workDir" value="#{workDir}"/>
 			<property name="eventBus">
 				<bean class="com.google.common.eventbus.EventBus"/>

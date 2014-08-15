@@ -9,27 +9,27 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>
-		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentListenableComponent"/>
+		<bean id="classDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>
+		<bean id="sourceDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentListenableComponent"/>
 		
-		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
+		<bean id="jarExploder" class="net.ayld.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{workDir}"/>
 		</bean>
 		
-		<bean id="explicitJarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
+		<bean id="explicitJarExploder" class="net.ayld.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{mandatoryWorkDir}"/>
 		</bean>
 		
-		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
+		<bean id="jarMaker" class="net.ayld.diet.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>
 		
-		<bean id="unanimousMatcher" class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+		<bean id="unanimousMatcher" class="net.ayld.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 			<property name="conditions">
 				<set>
-					<bean class="net.ayld.facade.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
-					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
-					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+					<bean class="net.ayld.diet.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
+					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
 				</set>
 			</property>
 		</bean>
