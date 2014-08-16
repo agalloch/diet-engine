@@ -14,9 +14,9 @@
 
 	<context:annotation-config />
 	
-	<context:component-scan base-package="net.ayld"/>
+	<context:component-scan base-package="org.codarama"/>
 	
-	<bean id="workDir" class="net.ayld.diet.test.util.WorkDirPathLocatorBeanFactory"/>
+	<bean id="workDir" class="org.codarama.diet.test.util.WorkDirPathLocatorBeanFactory"/>
 	
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:config.properties"/>

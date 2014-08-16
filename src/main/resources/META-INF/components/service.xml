@@ -9,27 +9,27 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		<bean id="classDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>
-		<bean id="sourceDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentListenableComponent"/>
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>
+		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentListenableComponent"/>
 		
-		<bean id="jarExploder" class="net.ayld.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
+		<bean id="jarExploder" class="org.codarama.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{workDir}"/>
 		</bean>
 		
-		<bean id="explicitJarExploder" class="net.ayld.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
+		<bean id="explicitJarExploder" class="org.codarama.diet.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{mandatoryWorkDir}"/>
 		</bean>
 		
-		<bean id="jarMaker" class="net.ayld.diet.bundle.impl.ManualJarMaker">
+		<bean id="jarMaker" class="org.codarama.diet.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>
 		
-		<bean id="unanimousMatcher" class="net.ayld.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+		<bean id="unanimousMatcher" class="org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 			<property name="conditions">
 				<set>
-					<bean class="net.ayld.diet.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
-					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
-					<bean class="net.ayld.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+					<bean class="org.codarama.diet.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
+					<bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+					<bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
 				</set>
 			</property>
 		</bean>

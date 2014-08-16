@@ -11,10 +11,10 @@
 
 		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
-		<bean id="parentResolver" class="net.ayld.diet.component.ListenableComponent" abstract="true">
+		<bean id="parentResolver" class="org.codarama.diet.component.ListenableComponent" abstract="true">
 			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
 		
-		<bean id="classDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentResolver"/>
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentResolver"/>
 		
 </beans>

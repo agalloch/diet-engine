@@ -7,7 +7,7 @@
 		
 		profile="concurrent">
 		
-		<bean id="jarExploder" class="net.ayld.diet.bundle.impl.CuncurrentManualJarExploder" parent="parentListenableComponent">
+		<bean id="jarExploder" class="org.codarama.diet.bundle.impl.CuncurrentManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{workDir}"/>
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
@@ -16,7 +16,7 @@
 			</property>
 		</bean>
 		
-		<bean id="explicitJarExploder" class="net.ayld.diet.bundle.impl.CuncurrentManualJarExploder" parent="parentListenableComponent">
+		<bean id="explicitJarExploder" class="org.codarama.diet.bundle.impl.CuncurrentManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{mandatoryWorkDir}"/>
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
@@ -25,7 +25,7 @@
 			</property>
 		</bean>
 		
-		<bean id="classDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ConcurrentManualClassDependencyResolver" parent="parentListenableComponent">
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualClassDependencyResolver" parent="parentListenableComponent">
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
 					<constructor-arg value="${cuncurrent.class.resolver.thread.pool.size}" type="int"/>
@@ -33,7 +33,7 @@
 			</property>
 		</bean>
 		
-		<bean id="sourceDependencyResolver" class="net.ayld.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver" parent="parentListenableComponent">
+		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver" parent="parentListenableComponent">
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
 					<constructor-arg value="${cuncurrent.source.resolver.thread.pool.size}" type="int"/>

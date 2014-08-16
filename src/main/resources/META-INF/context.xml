@@ -18,7 +18,7 @@
 	<import resource="classpath:META-INF/components/service.xml" />
 	<import resource="classpath:META-INF/components/concurrent.xml" />
 	
-	<context:component-scan base-package="net.ayld"/>
+	<context:component-scan base-package="org.codarama"/>
 	
 	<bean id="workDir" class="java.lang.String" factory-method="valueOf">
 		<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
@@ -38,7 +38,7 @@
 	
 	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 	
-	<bean id="parentListenableComponent" class="net.ayld.diet.component.ListenableComponent" abstract="true">
+	<bean id="parentListenableComponent" class="org.codarama.diet.component.ListenableComponent" abstract="true">
 		<property name="eventBus" ref="statusUpdateEventBus"/>
 	</bean>
 	
