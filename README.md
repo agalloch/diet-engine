@@ -1,13 +1,6 @@
 [![Build Status](https://travis-ci.org/Codarama/Diet.svg?branch=master)](https://travis-ci.org/Codarama/Diet)
 [![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
 
-Project Ownership Change
-======
-
-This project repo is currently changing ownership and might be unstable.
-We recommend using [the old one ](http://ayld.github.io/Facade/) until the transfer is complete.
-This file will be updated when it is ready.
-
 Diet
 ======
 
