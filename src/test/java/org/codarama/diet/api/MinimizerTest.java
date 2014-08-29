@@ -30,7 +30,7 @@ public class MinimizerTest {
 		
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
 		
-		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
+		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ public class MinimizerTest {
 		Assert.assertTrue("out jar is null", outJar != null);
 		
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
-		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
+		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
 		
 		Assert.assertTrue("org.primefaces.json.JSONArray, mandatory include not found", outJar.getEntry(Joiner.on(File.separator).join("org", "primefaces", "json", "JSONArray.class")) != null);
 		

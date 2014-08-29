@@ -3,6 +3,7 @@ package org.codarama.diet.dependency.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
+import com.google.common.base.Joiner;
 import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.event.model.SourceDependencyResolutionEndEvent;
@@ -32,7 +33,7 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 		for (String line : Splitter.on("\n").split(sourceFileContent)) {
 			
 			// we reached class definition, no point to loop any further
-			String publicClassDefinition = SourceFile.PUBLIC_KEYWORD + " " + SourceFile.CLASS_KEYWORD;
+			final String publicClassDefinition = Joiner.on(" ").join(SourceFile.PUBLIC_KEYWORD, SourceFile.CLASS_KEYWORD);
 			if (line.startsWith(publicClassDefinition) || line.startsWith(SourceFile.CLASS_KEYWORD)) {
 				break;
 			}

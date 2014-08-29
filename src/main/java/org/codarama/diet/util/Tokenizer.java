@@ -32,7 +32,8 @@ public final class Tokenizer {
 	}
 	
 	public List<String> tokensIn(Range<Integer> range) {
-		if (!(range.hasUpperBound() && range.hasLowerBound())) {
+      final boolean doesntHaveUpperAndLowerBounds = !(range.hasUpperBound() && range.hasLowerBound());
+      if (doesntHaveUpperAndLowerBounds) {
 			throw new IllegalArgumentException("boundless ranges are not currently supported");
 		}
 		

@@ -8,7 +8,7 @@ import com.google.common.io.Resources;
 public enum Settings {
 	DEFAULT_OUT_DIR("jar.compaction.dir"),
 	EXPLICIT_OUT_DIR("jar.mandatory.extraction.dir"),
-	DEFAULT_FACADE_JAR_NAME("jar.facade.name"),
+	DEFAULT_RESULT_JAR_NAME("jar.facade.name"),
 	CONCURRENCY_ENABLED("concurrent.components.enabled"),
 	CONCURRENT_PROFILE_NAME("concurrent.beans.profile.name");
 	

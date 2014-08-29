@@ -29,16 +29,16 @@ public final class Minimizer {
 	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
 	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
 
-    private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
-    private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
+   private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
+   private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
 	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance(); // don't use if you're under 18
 	
-	private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
-	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue();
+	private String workDir = Settings.DEFAULT_OUT_DIR.getValue(); // this is usually the OS temp dir
+	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue(); // this is where explicitly included dependencies go
 	private File outJar = new File(
 		Joiner
 			.on(File.separator)
-			.join(workDir, Settings.DEFAULT_FACADE_JAR_NAME.getValue())
+			.join(workDir, Settings.DEFAULT_RESULT_JAR_NAME.getValue())
 	);
 	
 	private File libDir;
@@ -85,8 +85,9 @@ public final class Minimizer {
 		if (!out.exists() && !out.mkdirs()) {
 			throw new IllegalStateException("unable to create dir for output jar: " + outDir);
 		}
-		
-		this.outJar = new File(Joiner.on(File.separator).join(out.getAbsolutePath(), Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
+
+      final String resultJarPath = Joiner.on(File.separator).join(out.getAbsolutePath(), Settings.DEFAULT_RESULT_JAR_NAME.getValue());
+      this.outJar = new File(resultJarPath);
 		
 		return this;
 	}
