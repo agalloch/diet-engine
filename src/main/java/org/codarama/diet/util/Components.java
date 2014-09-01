@@ -10,17 +10,28 @@ public enum Components {
 	SOURCE_DEPENDENCY_RESOLVER("sourceDependencyResolver"),
 	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher"),
 	EVENT_BUS("statusUpdateEventBus");
-	
-	private final ApplicationContext context;
+
+	private static ApplicationContext CONTEXT;
+
 	private final String name;
 
 	private Components(String name) {
-		this.context = Contexts.SPRING.instance();
+      if (!isContextInitialized()) {
+         initContext();
+      }
 		this.name = name;
 	}
-	
+
+   private static boolean isContextInitialized() {
+      return CONTEXT != null;
+   }
+
+   private static void initContext() {
+      CONTEXT = Contexts.SPRING.instance();
+   }
+
 	@SuppressWarnings("unchecked")
 	public <T> T getInstance() {
-		return (T) context.getBean(name);
+		return (T) CONTEXT.getBean(name);
 	}
 }
