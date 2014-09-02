@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Facade by Codarama</title>
+    <title>Diet by Codarama</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -17,8 +17,8 @@
   <body>
 
       <header>
-        <h1>Facade</h1>
-        <p>Facade significantly minimizes the space used by your project&#39;s /lib </p>
+        <h1>Diet</h1>
+        <p>Diet significantly minimizes the space used by your project&#39;s /lib </p>
       </header>
 
       <div id="banner">
@@ -40,10 +40,10 @@
       </nav>
       <section>
         <h1>
-<a name="facade" class="anchor" href="#facade"><span class="octicon octicon-link"></span></a>Facade</h1>
+<a name="diet" class="anchor" href="#diet"><span class="octicon octicon-link"></span></a>Diet</h1>
 
-<p>Facade tries to create a jar from all of the jars used by a project.
-The facade jar should contain only classes the project actually uses, nothing else.</p>
+<p>Diet tries to create a jar from all of the jars used by a project.
+The Diet jar should contain only classes the project actually uses, nothing else.</p>
 
 <p>This is currently just a library, but it should <a href="https://github.com/amaranthius/facade-maven">evolve to a Maven plugin</a> and perhaps a web project.</p>
 
@@ -53,7 +53,7 @@ The facade jar should contain only classes the project actually uses, nothing el
 <h3>
 <a name="source-dependency-resolution" class="anchor" href="#source-dependency-resolution"><span class="octicon octicon-link"></span></a>Source Dependency Resolution</h3>
 
-<p>Facade can resolve the dependencies of .java source files. 
+<p>Diet can resolve the dependencies of .java source files. 
 Currently like this:</p>
 
 <div class="highlight highlight-java"><pre><span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">ClassName</span><span class="o">&gt;</span> <span class="n">dependencies</span> <span class="o">=</span> <span class="n">Dependencies</span>
@@ -64,7 +64,7 @@ Currently like this:</p>
 <h3>
 <a name="binary-class-dependency-resolution" class="anchor" href="#binary-class-dependency-resolution"><span class="octicon octicon-link"></span></a>Binary Class Dependency Resolution</h3>
 
-<p>Facade can also resolve the dependencies of compiled binary .class files:</p>
+<p>Diet can also resolve the dependencies of compiled binary .class files:</p>
 
 <div class="highlight highlight-java"><pre><span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">ClassName</span><span class="o">&gt;</span> <span class="n">dependencies</span> <span class="o">=</span> <span class="n">Dependencies</span>
     <span class="o">.</span><span class="na">ofClass</span><span class="o">(</span><span class="n">ClassFile</span><span class="o">.</span><span class="na">fromFilepath</span><span class="o">(</span><span class="s">"/abs/path/to/Class.class"</span><span class="o">))</span>
@@ -90,7 +90,7 @@ For more info on the <code>Dependencies</code> API have <a href="https://github.
 <h3>
 <a name="component-events" class="anchor" href="#component-events"><span class="octicon octicon-link"></span></a>Component Events</h3>
 
-<p>Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
+<p>Diet can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
 resolving the dependencies of a binary class you can:</p>
 
 <div class="highlight highlight-java"><pre><span class="n">ListenerRegistrar</span><span class="o">.</span><span class="na">listeners</span><span class="o">(</span><span class="k">new</span> <span class="nf">Object</span><span class="o">()</span> <span class="o">{</span>
