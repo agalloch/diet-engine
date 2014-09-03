@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/Codarama/Diet.svg?branch=master)](https://travis-ci.org/Codarama/Diet)
-[![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
+[![Build Status](https://travis-ci.org/Codarama/diet-engine.svg?branch=master)](https://travis-ci.org/Codarama/diet-engine)
+[![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/diet-engine)
 
 Diet
 ======
