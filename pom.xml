@@ -2,12 +2,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>net.ayld.diet</groupId>
-	<artifactId>diet</artifactId>
-	<version>v0.6-alpha.1-SNAPSHOT</version>
+	<groupId>org.codarama.diet</groupId>
+	<artifactId>diet-engine</artifactId>
+	<version>0.6.0-SNAPSHOT</version>
 	
 	<packaging>jar</packaging>
-	<name>Diet</name>
+	<name>Diet Engine</name>
 	
 	<properties>
 		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
