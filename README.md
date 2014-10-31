@@ -7,7 +7,7 @@ Diet
 Diet tries to create a jar from all of the jars used by a project.
 The result jar should contain only classes the project actually uses, nothing else.
 
-This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/amaranthius/facade-maven), an eclpse plugin and perhaps a web project.
+This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/Codarama/diet-maven-mojo), an eclpse plugin and perhaps a web project.
 
 It's main target group is currently android development as space conservation is completely uneeded for web development, but it can be used for that also.
 
