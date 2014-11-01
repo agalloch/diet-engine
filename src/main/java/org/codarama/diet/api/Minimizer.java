@@ -1,220 +1,97 @@
 package org.codarama.diet.api;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import org.codarama.diet.bundle.JarExploder;
-import org.codarama.diet.bundle.JarMaker;
-import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
-import org.codarama.diet.dependency.resolver.DependencyResolver;
-import org.codarama.diet.model.ClassFile;
-import org.codarama.diet.model.ClassName;
-import org.codarama.diet.model.SourceFile;
-import org.codarama.diet.util.Components;
-import org.codarama.diet.util.Directories;
-import org.codarama.diet.util.Files;
-import org.codarama.diet.util.Settings;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-public final class Minimizer {
-	private static final String JAVA_API_ROOT_PACKAGE = "java";
-	
-	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.getInstance();
-	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
+import org.codarama.diet.model.ClassName;
 
-   private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
-   private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
-	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance(); // don't use if you're under 18
-	
-	private String workDir = Settings.DEFAULT_OUT_DIR.getValue(); // this is usually the OS temp dir
-	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue(); // this is where explicitly included dependencies go
-	private File outJar = new File(
-		Joiner
-			.on(File.separator)
-			.join(workDir, Settings.DEFAULT_RESULT_JAR_NAME.getValue())
-	);
-	
-	private File libDir;
-	private final File sourceDir;
+/**
+ * <p>
+ * Any implementation of the {@link Minimizer} interface should be responsible for building itself using the builder
+ * pattern and providing the API frontend of Diet's jar minimizing functionality.
+ * </p>
+ */
+public interface Minimizer {
 
-	private Set<JarFile> forceIncludeJars = Sets.newHashSet();
-	private Set<ClassName> forceIncludeClasses = Sets.newHashSet();
-	
-	private Minimizer(File sourceDir) {
-		final File outJarDir = new File(outJar.getParent());
-		
-		if (!outJarDir.exists() && !outJarDir.mkdirs()) {
-			throw new IllegalStateException("unable to create parent dir for output jar: " + outJar.getParent());
-		}
-		
-		this.sourceDir = sourceDir;
-	}
+	/**
+	 * <p>
+	 * Set up a given path to serve as the {@link Minimizer}s libraries directory
+	 * </p>
+	 * <p>
+	 * The {@link Minimizer} would assume that all the dependencies of the sources are located within this directory or
+	 * it's sub directories
+	 * </p>
+	 * 
+	 * @param pathToLibraries
+	 *            the file path to the directory
+	 * @return an instance of the {@link Minimizer} that is being set up
+	 * @throws IOException
+	 *             in case there is a problem resolving the path
+	 */
+	Minimizer libs(String pathToLibraries) throws IOException;
 
-	public static Minimizer sources(String srcDir) {
-		final File sourceDir = new File(srcDir);
-		
-		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
-			throw new IllegalArgumentException("directory at: " + srcDir + " does not exist or is not a directory");
-		}
-		
-		return new Minimizer(sourceDir);
-	}
-	
-	public Minimizer libs(String libDir) {
-		final File lib = new File(libDir);
-		
-		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
-			throw new IllegalArgumentException("directory at: " + libDir + " does not exist or is not a directory");
-		}
-		
-		this.libDir = lib;
-		
-		return this;
-	}
-	
-	public Minimizer output(String outDir) {
-		final File out = new File(outDir);
-		
-		if (!out.exists() && !out.mkdirs()) {
-			throw new IllegalStateException("unable to create dir for output jar: " + outDir);
-		}
+	/**
+	 * <p>
+	 * Use the provided {@link Set} of {@link File}s as the list of dependencies, which need to be minimized
+	 * </p>
+	 * 
+	 * @param artifactLocations
+	 *            a {@link Set} of {@link File}s that are dependencies of this project
+	 * @return an instance of the {@link Minimizer} that is being set up
+	 */
+	Minimizer libs(Set<File> artifactLocations);
 
-      final String resultJarPath = Joiner.on(File.separator).join(out.getAbsolutePath(), Settings.DEFAULT_RESULT_JAR_NAME.getValue());
-      this.outJar = new File(resultJarPath);
-		
-		return this;
-	}
-	
-	public Minimizer forceInclude(JarFile... jars) {
-		this.forceIncludeJars.addAll(Arrays.asList(jars));
-		
-		return this;
-	}
-	
-	public Minimizer forceInclude(ClassName... classes) {
-		this.forceIncludeClasses.addAll(Arrays.asList(classes));
-		
-		return this;
-	}
-	
-	public JarFile getJar() throws IOException {
-		final String libDirPath = libDir.getAbsolutePath();
-		extractLibJars(libDirPath);
-		
-		final Set<SourceFile> sources = Sets.newHashSet();
-		for (File sourceFile : Files.in(sourceDir.getAbsolutePath()).withExtension(SourceFile.EXTENSION).list()) {
-			sources.add(SourceFile.fromFile(sourceFile));
-		}
-		
-		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
-		
-		final Set<File> libClasses = ImmutableSet.copyOf(
-				Files.in(workDir).withExtension(ClassFile.EXTENSION).list()
-		);
-		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
-		
-		addDependenciesOfDependencies(foundDependencies, libClasses);
-		foundDependencies.addAll(forceIncludeDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses, libClasses));
-		
-		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(foundDependencies.size());
-		for (ClassFile dep : foundDependencies) {
-			dependenciesForPackaging.add(dep.physicalFile());
-		}
+	/**
+	 * <p>
+	 * Set up a given path to server as the {@link Minimizer}s output directory
+	 * </p>
+	 * <p>
+	 * All the minimized output would be dropped in that location
+	 * </p>
+	 * 
+	 * @param pathToOutput
+	 *            the path to the directory to serve as an output
+	 * @return an instance of the {@link Minimizer} that is being set up
+	 */
+	Minimizer output(String pathToOutput);
 
-        final JarFile result = jarMaker.zip(dependenciesForPackaging);
+	/**
+	 * <p>
+	 * Forcefully include {@link JarFile}s even if they did not want to be part of this
+	 * </p>
+	 * <p>
+	 * Used for sources that could not be recognized by the {@link Minimizer}s dependency detecting logic, essentially a
+	 * fallback mechanism
+	 * </p>
+	 * 
+	 * @param jars
+	 *            an array of {@link JarFile} to be forcefully included
+	 * @return an instance of the {@link Minimizer} that is being set up
+	 */
+	Minimizer forceInclude(JarFile... jars);
 
-        cleanWorkDir();
+	/**
+	 * <p>
+	 * Forcefully include {@link ClassName}s even if they did not want to be part of this
+	 * </p>
+	 * <p>
+	 * Used for sources that could not be recognized by the {@link Minimizer}s dependency detecting logic, essentially a
+	 * fallback mechanism
+	 * </p>
+	 * 
+	 * @param classes
+	 *            an array of {@link ClassName}s to be forcefully included
+	 * @return an instance of the {@link Minimizer} that is being set up
+	 */
+	Minimizer forceInclude(ClassName... classes);
 
-        return result;
-	}
+	/**
+	 * @return the resulting minimized {@link JarFile}
+	 * @throws IOException
+	 *             if an error occurred while deleting the temporary files
+	 */
+	JarFile getJar() throws IOException;
 
-    private void cleanWorkDir() throws IOException {
-        final Set<File> dirtyDirs = Directories.in(workDir).nameEndsWith(JarMaker.JAR_FILE_EXTENSION).list(); // dirty ho ho ho ;)
-        for (File dirty : dirtyDirs) {
-            Files.deleteRecursive(dirty);
-        }
-    }
-
-    private Set<ClassFile> forceIncludeDependenciesAsFiles(Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
-		final Set<ClassFile> result = Sets.newHashSet();
-		
-		for (ClassName includeClass : explicitIncludeClasses) {
-			
-			final Set<ClassFile> foundInLib = findInLib(ImmutableSet.of(includeClass), libClasses);
-			if (foundInLib.size() < 1) {
-				throw new IllegalStateException("can't find user defined class: " + includeClass + ", in: " + libDir.getAbsolutePath());
-			}
-			result.addAll(foundInLib);
-		}
-		
-		explicitJarExploder.explode(explicitIncludeJars);
-		
-		for (File extracted : Files.in(explicitOutDir).withExtension(ClassFile.EXTENSION).list()) {
-			result.add(ClassFile.fromFile(extracted));
-		}
-		
-		return result;
-	}
-	
-	private Set<ClassFile> addDependenciesOfDependencies(Set<ClassFile> deps, final Set<File> libClasses) throws IOException {
-		removeJavaApiDeps(deps);
-		
-		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
-		
-		final int sizeBeforeResolve = deps.size();
-		if (deps.size() == sizeBeforeResolve) {
-			return deps;
-		}
-		
-		return addDependenciesOfDependencies(deps, libClasses);
-	}
-	
-	private void removeJavaApiDeps(Set<ClassFile> deps) {
-		for (Iterator<ClassFile> iterator = deps.iterator(); iterator.hasNext();) {
-			
-			 final ClassFile dep = iterator.next();
-			 
-			 if (dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE)) {
-				 iterator.remove();
-			 }
-		}
-	}
-	
-	private Set<ClassFile> findInLib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
-		
-		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
-		for (ClassName dependencyName : dependencyNames) {
-			for (File libClass : libClasses) {
-				
-				final ClassFile libClassFile = ClassFile.fromFile(libClass);
-				
-				if (dependencyMatcherStrategy.matches(dependencyName, libClassFile)) {
-					result.add(libClassFile);
-				}
-			}
-		}
-		return result;
-	}
-	
-	private void extractLibJars(String libDir) throws IOException {
-		final Set<JarFile> libJars = Sets.newHashSet();
-
-		for (File jarFile : Files.in(libDir).withExtension(JarMaker.JAR_FILE_EXTENSION).list()) {
-            try {
-                libJars.add(new JarFile(jarFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw e;
-            }
-        }
-
-		libJarExploder.explode(libJars);
-	}
 }
