@@ -21,8 +21,8 @@ public class MinimizerTest {
 
 	@Test
 	public void minimize() throws IOException {
-		final JarFile outJar = DietMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).getJar();
+		final JarFile outJar = DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).minimize().getJar();
 		Assert.assertTrue(outJar != null);
 
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
@@ -34,9 +34,10 @@ public class MinimizerTest {
 		final JarFile mandatoryJar = new JarFile(new File(
 				toPath(Resources.getResource("test-classes/test-lib-dir/commons-lang3-3.1.jar"))));
 
-		final JarFile outJar = DietMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+		final JarFile outJar = DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
 				.libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
-				.forceInclude(new ClassName("org.primefaces.json.JSONArray")).forceInclude(mandatoryJar).getJar();
+				.forceInclude(new ClassName("org.primefaces.json.JSONArray")).forceInclude(mandatoryJar).minimize()
+				.getJar();
 
 		Assert.assertTrue("out jar is null", outJar != null);
 

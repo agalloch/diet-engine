@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import org.codarama.diet.api.reporting.MinimizationReport;
+import org.codarama.diet.api.reporting.ReportBuilder;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
@@ -26,12 +28,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 /**
- * The {@link DietMinimizer} is a simple implementation of the {@link Minimizer} interface that uses the
+ * The {@link DefaultMinimizer} is a simple implementation of the {@link Minimizer} interface that uses the
  * {@link DependencyMatcherStrategy} to locate the dependencies that we want to include in the minimized result
  */
-public final class DietMinimizer implements Minimizer {
+public final class DefaultMinimizer implements Minimizer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DietMinimizer.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 
 	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY
@@ -74,7 +76,7 @@ public final class DietMinimizer implements Minimizer {
 	 * @param pathToSources
 	 *            the full path to the root sources directory
 	 */
-	private DietMinimizer(File pathToSources) {
+	private DefaultMinimizer(File pathToSources) {
 		final File outJarDir = new File(outJar.getParent());
 
 		if (!outJarDir.exists() && !outJarDir.mkdirs()) {
@@ -110,7 +112,7 @@ public final class DietMinimizer implements Minimizer {
 					+ " does not exist or is not a directory");
 		}
 
-		return new DietMinimizer(sourceDirectory);
+		return new DefaultMinimizer(sourceDirectory);
 	}
 
 	@Override
@@ -161,8 +163,12 @@ public final class DietMinimizer implements Minimizer {
 	}
 
 	@Override
-	public JarFile getJar() throws IOException {
+	public MinimizationReport minimize() throws IOException {
 
+		// TODO itching to use aspects here, as this is a cross cutting concern, but lets keep it simple for now
+		ReportBuilder builder = ReportBuilder.startClock();
+
+		// start by analysing all the source files
 		final Set<SourceFile> sources = Sets.newHashSet();
 		for (File sourceFile : Files.in(sourceDir.getAbsolutePath()).withExtension(SourceFile.EXTENSION).list()) {
 			sources.add(SourceFile.fromFile(sourceFile));
@@ -174,6 +180,8 @@ public final class DietMinimizer implements Minimizer {
 		final Set<File> libClasses = ImmutableSet.copyOf(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
 		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
 
+		builder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
+
 		addDependenciesOfDependencies(foundDependencies, libClasses);
 		foundDependencies.addAll(forceIncludeDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses,
 				libClasses));
@@ -183,11 +191,11 @@ public final class DietMinimizer implements Minimizer {
 			dependenciesForPackaging.add(dep.physicalFile());
 		}
 
-		final JarFile result = jarMaker.zip(dependenciesForPackaging);
+		builder.setJarFile(jarMaker.zip(dependenciesForPackaging)).stopClock();
 
 		cleanWorkDir();
 
-		return result;
+		return builder.getReport();
 	}
 
 	private void cleanWorkDir() throws IOException {
@@ -227,9 +235,9 @@ public final class DietMinimizer implements Minimizer {
 			throws IOException {
 		removeJavaApiDeps(deps);
 
-		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
-
 		final int sizeBeforeResolve = deps.size();
+
+		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
 		if (deps.size() == sizeBeforeResolve) {
 			return deps;
 		}

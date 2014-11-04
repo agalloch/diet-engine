@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.model.ClassName;
 
 /**
@@ -88,10 +89,10 @@ public interface Minimizer {
 	Minimizer forceInclude(ClassName... classes);
 
 	/**
-	 * @return the resulting minimized {@link JarFile}
+	 * @return the resulting {@link MinimizationReport}
 	 * @throws IOException
 	 *             if an error occurred while deleting the temporary files
 	 */
-	JarFile getJar() throws IOException;
+	MinimizationReport minimize() throws IOException;
 
 }
