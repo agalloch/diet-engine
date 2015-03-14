@@ -22,7 +22,7 @@ public class ConcurrentManualClassDependencyResolver extends ManualBinaryParseCl
 	private ExecutorService threadPool;
 	
 	@Override
-	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
+	public Set<ClassName> resolvable(Set<ClassFile> classFiles) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 
 		final Set<Callable<Set<ClassName>>> resolutionTasks = Sets.newHashSetWithExpectedSize(classFiles.size());

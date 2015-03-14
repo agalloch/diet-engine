@@ -53,11 +53,11 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 		
 		eventBus.post(new SourceDependencyResolutionEndEvent("resolved: " + result, this.getClass()));
 		
-		return ImmutableSet.copyOf(result);
+		return result;
 	}
 
 	@Override
-	public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
+	public Set<ClassName> resolvable(Set<SourceFile> sources) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 		
 		for (SourceFile source : sources) {

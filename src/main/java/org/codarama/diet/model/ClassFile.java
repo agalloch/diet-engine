@@ -23,7 +23,7 @@ import java.util.Set;
  * More info here:
  *   http://en.wikipedia.org/wiki/Java_class_file
  * */
-public class ClassFile { // XXX magic numbers
+public class ClassFile implements Resolvable{ // XXX magic numbers
 	
 	public static final String EXTENSION = "class";
 	

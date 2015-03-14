@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import com.google.common.base.Charsets;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.Tokenizer;
@@ -18,7 +19,7 @@ import com.google.common.io.Resources;
  * Upon creation this class parses the Java source it is being created from and validates it's correctness. Throws
  * {@link IllegalArgumentException} if the source file fails validation.
  * */
-public class SourceFile {
+public class SourceFile implements Resolvable{
 
 	public static final String EXTENSION = "java";
 	public static final String PACKAGE_KEYWORD = "package";
@@ -26,6 +27,12 @@ public class SourceFile {
 	public static final String WILDCARD_IMPORT_SUFFIX = "*";
 	public static final String CLASS_KEYWORD = "class";
 	public static final String PUBLIC_KEYWORD = "public";
+	public static final String COMMENT_START = "//";
+	public static final String BLOCK_COMMENT_START = "/*";
+
+    private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(
+            IMPORT_KEYWORD, PACKAGE_KEYWORD, COMMENT_START, BLOCK_COMMENT_START
+    );
 
 	private Set<ClassName> dependencies;
 	private final File source;
@@ -126,11 +133,12 @@ public class SourceFile {
 			return false;
 		}
 
-		// FIXME How do we actually check if a given file is a source file?
-		// [tishun] Deleted logic that checks the first line as it failed for files that start with licensing disclaimer
-		// or other JavaDoc/comments; we need to think of a better way to validate this
+        final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
 
-		return true;
+        final String firstLine = Tokenizer.delimiter("\n").tokenize(sourceFileContent).firstToken();
+        final String firstWord = Tokenizer.delimiter(" ").tokenize(firstLine).firstToken();
+
+        return VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord);
 	}
 
 	@Override

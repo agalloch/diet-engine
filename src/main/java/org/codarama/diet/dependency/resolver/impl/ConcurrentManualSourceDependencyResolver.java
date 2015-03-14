@@ -22,7 +22,7 @@ public class ConcurrentManualSourceDependencyResolver extends ManualParseSourceD
 	private ExecutorService threadPool;
 	
 	@Override
-	public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
+	public Set<ClassName> resolvable(Set<SourceFile> sources) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 
 		final Set<Callable<Set<ClassName>>> resolutionTasks = Sets.newHashSetWithExpectedSize(sources.size());
