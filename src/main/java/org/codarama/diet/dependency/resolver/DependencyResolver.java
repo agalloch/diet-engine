@@ -17,7 +17,7 @@ public interface DependencyResolver<T extends Resolvable> {
      * @param resolvable resolvable to find dependencies of
      * @return dependencies of given resolvable as {@link ClassName}s
      * */
-	public Set<ClassName> resolve(T resolvable) throws IOException;
+	public <T> Set<ClassName> resolve(T resolvable) throws IOException;
 	
-	public Set<ClassName> resolvable(Set<T> from) throws IOException;
+	public <T> Set<ClassName> resolvable(Set<T> from) throws IOException;
 }
