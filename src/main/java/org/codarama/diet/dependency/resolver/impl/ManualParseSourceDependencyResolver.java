@@ -9,6 +9,7 @@ import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.event.model.SourceDependencyResolutionEndEvent;
 import org.codarama.diet.event.model.SourceDependencyResolutionStartEvent;
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.model.Resolvable;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.util.Tokenizer;
 import org.codarama.diet.util.annotation.ThreadSafe;
@@ -57,7 +58,7 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 	}
 
 	@Override
-	public Set<ClassName> resolvable(Set<SourceFile> sources) throws IOException {
+	public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 		
 		for (SourceFile source : sources) {

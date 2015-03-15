@@ -174,7 +174,7 @@ public final class DefaultMinimizer implements Minimizer {
 			sources.add(SourceFile.fromFile(sourceFile));
 		}
 
-		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolvable(sources);
+		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
 
 		explodeJars(libraryLocations);
 		final Set<File> libClasses = ImmutableSet.copyOf(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
@@ -237,7 +237,7 @@ public final class DefaultMinimizer implements Minimizer {
 
 		final int sizeBeforeResolve = deps.size();
 
-		deps.addAll(findInLib(classDependencyResolver.resolvable(deps), libClasses));
+		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
 		if (deps.size() == sizeBeforeResolve) {
 			return deps;
 		}

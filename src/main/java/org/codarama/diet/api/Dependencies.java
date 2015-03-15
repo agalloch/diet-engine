@@ -43,10 +43,10 @@ public final class Dependencies {
 	public Set<ClassName> set() {
 		try {
 			if (sourceResolution) {
-				return sourceDependencyResolver.resolvable((Set<SourceFile>) of);
+				return sourceDependencyResolver.resolve((Set<SourceFile>) of);
 			}
 			else {
-				return classDependencyResolver.resolvable((Set<ClassFile>) of);
+				return classDependencyResolver.resolve((Set<ClassFile>) of);
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException(e);

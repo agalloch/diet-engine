@@ -46,7 +46,7 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 	}
 	
 	@Override
-	public Set<ClassName> resolvable(Set<ClassFile> classFiles) throws IOException {
+	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 		
 		for (ClassFile classFile : classFiles) {

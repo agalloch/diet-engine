@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 
@@ -17,12 +18,12 @@ import org.springframework.beans.factory.annotation.Required;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public class ConcurrentManualClassDependencyResolver extends ManualBinaryParseClassDependencyResolver {
+public class ConcurrentManualClassDependencyResolver extends ManualBinaryParseClassDependencyResolver implements DependencyResolver<ClassFile>{
 
 	private ExecutorService threadPool;
 	
 	@Override
-	public Set<ClassName> resolvable(Set<ClassFile> classFiles) throws IOException {
+	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
 		final Set<ClassName> result = Sets.newHashSet();
 
 		final Set<Callable<Set<ClassName>>> resolutionTasks = Sets.newHashSetWithExpectedSize(classFiles.size());
