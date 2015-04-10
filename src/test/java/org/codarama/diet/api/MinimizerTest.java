@@ -21,8 +21,11 @@ public class MinimizerTest {
 
 	@Test
 	public void minimize() throws IOException {
-		final JarFile outJar = DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).minimize().getJar();
+		final JarFile outJar = DefaultMinimizer
+				.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+				.libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
+				.minimize()
+				.getJar();
 		Assert.assertTrue(outJar != null);
 
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
