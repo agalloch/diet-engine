@@ -82,6 +82,7 @@ in which case you will also need the dependencies. You can either find them [in 
 or download them from [the dependencies project](https://github.com/ayld/facade-dependencies).
  * Build [the latest tag](https://github.com/codarama/Diet/releases/tag/v0.6-alpha.1) with [Maven 3.x](http://maven.apache.org/). Just
 clone it and run `mvn clean install` in your local copy. This way Maven will get the dependencies for you.
+ * [Gradle](https://gradle.org/) can also be used to build the sources, [we have a separate branch for it](https://github.com/Codarama/diet-engine/tree/gradle-build) for now.
 
 You can also build the master branch (on your own risk) in the same way you build the latest tag.
 
