@@ -1,4 +1,4 @@
 language: java
 jdk:
   - oraclejdk7
-script: "mvn test jacoco:report coveralls:jacoco"
+script: "travis_wait mvn test jacoco:report coveralls:jacoco"
