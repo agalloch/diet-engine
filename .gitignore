@@ -5,3 +5,7 @@
 /.settings/*
 /.classpath
 /.project
+/.gradle
+/build
+/src/test/resources/test-classes/test-lib-dir/jar1/
+/src/test/resources/test-classes/test-lib-dir/jar2/

@@ -141,8 +141,9 @@ public final class DefaultMinimizer implements Minimizer {
 			throw new IllegalStateException("unable to create dir for output jar: " + pathToOutput);
 		}
 
-		final String resultJarPath = Joiner.on(File.separator).join(out.getAbsolutePath(),
-				Settings.DEFAULT_RESULT_JAR_NAME.getValue());
+		final String resultJarPath = Joiner
+				.on(File.separator)
+				.join(out.getAbsolutePath(), Settings.DEFAULT_RESULT_JAR_NAME.getValue());
 		this.outJar = new File(resultJarPath);
 
 		return this;
@@ -166,7 +167,7 @@ public final class DefaultMinimizer implements Minimizer {
 	public MinimizationReport minimize() throws IOException {
 
 		// TODO itching to use aspects here, as this is a cross cutting concern, but lets keep it simple for now
-		ReportBuilder builder = ReportBuilder.startClock();
+		ReportBuilder reportBuilder = ReportBuilder.startClock();
 
 		// start by analysing all the source files
 		final Set<SourceFile> sources = Sets.newHashSet();
@@ -177,10 +178,10 @@ public final class DefaultMinimizer implements Minimizer {
 		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
 
 		explodeJars(libraryLocations);
-		final Set<File> libClasses = ImmutableSet.copyOf(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
+		final Set<File> libClasses = Sets.newHashSet(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
 		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
 
-		builder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
+		reportBuilder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
 
 		addDependenciesOfDependencies(foundDependencies, libClasses);
 		foundDependencies.addAll(forceIncludeDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses,
@@ -191,11 +192,11 @@ public final class DefaultMinimizer implements Minimizer {
 			dependenciesForPackaging.add(dep.physicalFile());
 		}
 
-		builder.setJarFile(jarMaker.zip(dependenciesForPackaging)).stopClock();
+		reportBuilder.setJarFile(jarMaker.zip(dependenciesForPackaging)).stopClock();
 
 		cleanWorkDir();
 
-		return builder.getReport();
+		return reportBuilder.getReport();
 	}
 
 	private void cleanWorkDir() throws IOException {
@@ -245,12 +246,20 @@ public final class DefaultMinimizer implements Minimizer {
 		return addDependenciesOfDependencies(deps, libClasses);
 	}
 
+	private boolean isJavaApiDep(ClassName dep) {
+		return dep.toString().startsWith(JAVA_API_ROOT_PACKAGE);
+	}
+
+	private boolean isJavaApiDep(ClassFile dep) {
+		return dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE);
+	}
+
 	private void removeJavaApiDeps(Set<ClassFile> deps) {
 		for (Iterator<ClassFile> iterator = deps.iterator(); iterator.hasNext();) {
 
 			final ClassFile dep = iterator.next();
 
-			if (dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE)) {
+			if (isJavaApiDep(dep)) {
 				iterator.remove();
 			}
 		}
@@ -260,12 +269,19 @@ public final class DefaultMinimizer implements Minimizer {
 
 		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
 		for (ClassName dependencyName : dependencyNames) {
-			for (File libClass : libClasses) {
+			if (isJavaApiDep(dependencyName)) {
+				continue;
+			}
 
+			final Iterator<File> libClassesIter = libClasses.iterator();
+			while (libClassesIter.hasNext()) {
+
+				final File libClass = libClassesIter.next();
 				final ClassFile libClassFile = ClassFile.fromFile(libClass);
 
 				if (dependencyMatcherStrategy.matches(dependencyName, libClassFile)) {
 					result.add(libClassFile);
+					libClassesIter.remove();
 				}
 			}
 		}
@@ -279,7 +295,7 @@ public final class DefaultMinimizer implements Minimizer {
 			try {
 				libJars.add(new JarFile(jarFile));
 			} catch (IOException e) {
-				LOG.error("Error proccesing dependency " + jarFile.getAbsolutePath(), e);
+				LOG.error("Error processing dependency " + jarFile.getAbsolutePath(), e);
 			}
 		}
 

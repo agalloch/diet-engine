@@ -1,32 +1,65 @@
 package org.codarama.diet.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
+import com.google.common.io.Resources;
 import junit.framework.Assert;
-
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Settings;
 import org.codarama.diet.util.Tokenizer;
 import org.junit.Test;
 
-import com.google.common.base.Joiner;
-import com.google.common.io.Resources;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class MinimizerTest {
 
+	private static final String MINIMIZATION_RESULT_FILE_NAME = "minimizationTestExpectedResult";
+
 	@Test
 	public void minimize() throws IOException {
-		final JarFile outJar = DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).minimize().getJar();
-		Assert.assertTrue(outJar != null);
+		final String pathToSources = toPath(Resources.getResource("test-classes/test-src-dir"));
+		final String pathToLibraries = toPath(Resources.getResource("test-classes/test-lib-dir"));
+		final JarFile resultJar = DefaultMinimizer
+				.sources(pathToSources)
+				.libs(pathToLibraries)
+				.minimize()
+				.getJar();
+		Assert.assertTrue(resultJar != null);
 
-		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
-		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
+		final String resultJarName = Tokenizer.delimiter(File.separator).tokenize(resultJar.getName()).lastToken();
+		Assert.assertTrue(resultJarName.equals(Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
+
+		final String resultJarNameNoExtension = Tokenizer.delimiter(".").tokenize(resultJarName).firstToken();
+		final File dietJar = Files.in(Settings.DEFAULT_OUT_DIR.getValue()).named(resultJarNameNoExtension).single();
+		Assert.assertNotNull(dietJar);
+		Assert.assertTrue(dietJar.exists());
+
+		final Enumeration<JarEntry> jarEntries = resultJar.entries();
+		final Set<String> actualResultEntries = Sets.newHashSet();
+		while (jarEntries.hasMoreElements()) {
+
+			final JarEntry entry = jarEntries.nextElement();
+			actualResultEntries.add(entry.getName());
+		}
+
+		final List<String> expectedResultEntries = getExpectedMinimizationResult();
+		for (String expectedEntry : expectedResultEntries) {
+			Assert.assertTrue(actualResultEntries.contains(expectedEntry));
+		}
+	}
+
+	private List<String> getExpectedMinimizationResult() throws IOException {
+		final File resultsFile = new File(toPath(Resources.getResource(MINIMIZATION_RESULT_FILE_NAME)));
+		return com.google.common.io.Files.readLines(resultsFile, Charsets.UTF_8);
 	}
 
 	@Test
