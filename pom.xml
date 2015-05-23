@@ -1,15 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>org.codarama.diet</groupId>
 	<artifactId>diet-engine</artifactId>
-	<version>0.6.0-SNAPSHOT</version>	
+	<version>0.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Diet Engine</name>
 	<url>http://diet.codarama.org/</url>
-	
+
 	<properties>
 		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,19 +22,19 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>14.0.1</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.apache.bcel</groupId>
-		    <artifactId>bcel</artifactId>
-		    <version>5.2</version>
+			<groupId>org.apache.bcel</groupId>
+			<artifactId>bcel</artifactId>
+			<version>5.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -69,7 +70,7 @@
 			<artifactId>spring-context-support</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -84,16 +85,22 @@
 		</dependency>
 
 		<dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.5</version>
-        </dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.javaparser</groupId>
+			<artifactId>javaparser-core</artifactId>
+			<version>2.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -115,7 +122,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12</version>
 				<configuration>
-				<skipTests>false</skipTests>
+					<skipTests>false</skipTests>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -125,33 +132,34 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
+
 			<plugin>
-    				<groupId>org.eluder.coveralls</groupId>
-   				<artifactId>coveralls-maven-plugin</artifactId>
-    				<version>2.0.1</version>
-    				<configuration>
-        				<repoToken>zkuFsBFJUzCOKBvMcTbPba1bLnaWPPcr5</repoToken>
-    				</configuration>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<repoToken>zkuFsBFJUzCOKBvMcTbPba1bLnaWPPcr5</repoToken>
+				</configuration>
 			</plugin>
-			
+
 			<plugin>
-			    <groupId>org.jacoco</groupId>
-			    <artifactId>jacoco-maven-plugin</artifactId>
-			    <version>0.6.3.201306030806</version>
-			    <executions>
-			        <execution>
-			            <id>prepare-agent</id>
-			            <goals>
-			                <goal>prepare-agent</goal>
-			            </goals>
-			        </execution>
-			    </executions>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.6.3.201306030806</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
