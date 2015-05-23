@@ -3,24 +3,23 @@ package org.codarama.diet.dependency.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
-import com.google.common.base.Joiner;
 import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.event.model.SourceDependencyResolutionEndEvent;
 import org.codarama.diet.event.model.SourceDependencyResolutionStartEvent;
 import org.codarama.diet.model.ClassName;
-import org.codarama.diet.model.Resolvable;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.util.Tokenizer;
 import org.codarama.diet.util.annotation.ThreadSafe;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @ThreadSafe
+// TODO Use JavaParser instead of parsing manually
 public class ManualParseSourceDependencyResolver extends ListenableComponent implements DependencyResolver<SourceFile>{
 	
 	@Override
