@@ -239,6 +239,7 @@ public final class DefaultMinimizer implements Minimizer {
 		final int sizeBeforeResolve = deps.size();
 
 		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
+        LOG.debug("Found " + (deps.size() - sizeBeforeResolve) + " new lib classes for inclusion");
 		if (deps.size() == sizeBeforeResolve) {
 			return deps;
 		}
@@ -266,8 +267,10 @@ public final class DefaultMinimizer implements Minimizer {
 	}
 
 	private Set<ClassFile> findInLib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
+        final int dependenciesCount = dependencyNames.size();
+        LOG.debug("Looking for " + dependenciesCount + " dependencies in " + libClasses.size() + " lib classes");
 
-		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
+		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependenciesCount);
 		for (ClassName dependencyName : dependencyNames) {
 			if (isJavaApiDep(dependencyName)) {
 				continue;
@@ -285,6 +288,7 @@ public final class DefaultMinimizer implements Minimizer {
 				}
 			}
 		}
+        LOG.debug("Need to include " + result.size() + " lib classes for these " + dependenciesCount + " dependencies");
 		return result;
 	}
 
