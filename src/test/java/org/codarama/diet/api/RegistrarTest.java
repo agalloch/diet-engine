@@ -6,13 +6,16 @@ import java.net.URL;
 import junit.framework.Assert;
 
 import org.codarama.diet.event.model.OperationStartEvent;
+import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Tokenizer;
 import org.junit.Test;
 
 import com.google.common.eventbus.Subscribe;
 import com.google.common.io.Resources;
+import org.junit.experimental.categories.Category;
 
-public class RegistrarTest {
+@Category(IntegrationTest.class)
+public class RegistrarTest implements IntegrationTest{
 
 	@Test
 	public void jarExtractionUpdateCallCount() throws IOException {

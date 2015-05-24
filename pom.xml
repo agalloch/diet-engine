@@ -14,14 +14,22 @@
 	<properties>
 		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <test.suite>**/UnitTestsSuite.class</test.suite>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
+			<version>4.12</version>
 		</dependency>
+
+        <dependency>
+            <groupId>io.takari.junit</groupId>
+            <artifactId>takari-cpsuite</artifactId>
+            <version>1.2.7</version>
+            <scope>test</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -103,6 +111,15 @@
 		</dependency>
 	</dependencies>
 
+    <profiles>
+        <profile>
+            <id>intgr</id>
+            <properties>
+                <test.suite>org/codarama/diet/test/util/suite/IntegrationTestsSuite.java</test.suite>
+            </properties>
+        </profile>
+    </profiles>
+
 	<build>
 		<finalName>diet</finalName>
 
@@ -123,6 +140,9 @@
 				<version>2.12</version>
 				<configuration>
 					<skipTests>false</skipTests>
+                    <includes>
+                        <include>${test.suite}</include>
+                    </includes>
 				</configuration>
 				<dependencies>
 					<dependency>

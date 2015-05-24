@@ -6,10 +6,12 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import junit.framework.Assert;
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Settings;
 import org.codarama.diet.util.Tokenizer;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +22,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class MinimizerTest {
+@Category(IntegrationTest.class)
+public class MinimizerTest implements IntegrationTest{
 
 	private static final String MINIMIZATION_RESULT_FILE_NAME = "minimizationTestExpectedResult";
 
