@@ -3,7 +3,7 @@ package org.codarama.diet.api;
 import java.io.IOException;
 import java.net.URL;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.codarama.diet.event.model.OperationStartEvent;
 import org.codarama.diet.test.util.suite.IntegrationTest;

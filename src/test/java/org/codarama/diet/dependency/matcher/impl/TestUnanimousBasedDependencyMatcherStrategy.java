@@ -1,6 +1,6 @@
 package org.codarama.diet.dependency.matcher.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;

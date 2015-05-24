@@ -4,7 +4,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import junit.framework.Assert;
+import org.codarama.diet.model.ClassFile;
+import org.junit.Assert;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Files;
@@ -51,12 +52,20 @@ public class MinimizerTest implements IntegrationTest{
 		while (jarEntries.hasMoreElements()) {
 
 			final JarEntry entry = jarEntries.nextElement();
-			actualResultEntries.add(entry.getName());
-		}
+            final String resultingEntry = entry.getName();
+
+            // replace all slashes with dots, for OS independence
+            final String osAgnosticEntry = resultingEntry.replaceAll("/", ".").replaceAll("\\\\", ".");
+            actualResultEntries.add(osAgnosticEntry);
+        }
 
 		final List<String> expectedResultEntries = getExpectedMinimizationResult();
 		for (String expectedEntry : expectedResultEntries) {
-			Assert.assertTrue(actualResultEntries.contains(expectedEntry));
+            final boolean isNonClassEntry = !expectedEntry.endsWith(ClassFile.EXTENSION);
+            if (isNonClassEntry) {
+                continue; // skip non-class entries
+            }
+			Assert.assertTrue("results do not contain: " + expectedEntry, actualResultEntries.contains(expectedEntry));
 		}
 	}
 

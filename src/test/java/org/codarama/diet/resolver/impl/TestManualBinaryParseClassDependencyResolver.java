@@ -3,7 +3,7 @@ package org.codarama.diet.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;

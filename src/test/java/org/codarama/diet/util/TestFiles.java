@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;

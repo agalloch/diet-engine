@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.model.ExplodedJar;
 

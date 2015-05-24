@@ -2,7 +2,7 @@ package org.codarama.diet.api;
 
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.SourceFile;
