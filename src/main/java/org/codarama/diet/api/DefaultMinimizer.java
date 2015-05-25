@@ -36,21 +36,13 @@ public final class DefaultMinimizer implements Minimizer {
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 
-	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY
-			.getInstance();
-	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER
-			.getInstance();
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER
-			.getInstance();
+	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.getInstance();
+	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
+	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
 
 	private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
 	private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
-	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance(); // don't
-																									// use
-																									// if
-																									// you're
-																									// under
-																									// 18
+	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance();
 
 	// this is usually the OS temp dir
 	private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
@@ -177,15 +169,24 @@ public final class DefaultMinimizer implements Minimizer {
 
 		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
 
+		// TODO decide on what to do if there are no source dependencies
+
 		explodeJars(libraryLocations);
+
 		final Set<File> libClasses = Sets.newHashSet(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
+
+		// find sources dependencies
 		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
+
+		// recursively find class file dependencies until we find them all
+		addDependenciesOfDependencies(foundDependencies, libClasses);
 
 		reportBuilder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
 
-		addDependenciesOfDependencies(foundDependencies, libClasses);
-		foundDependencies.addAll(forceIncludeDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses,
-				libClasses));
+		// add user defined mandatory dependencies
+		final Set<ClassFile> mandatoryDependencies =
+				  mandatoryDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses, libClasses);
+		foundDependencies.addAll(mandatoryDependencies);
 
 		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(foundDependencies.size());
 		for (ClassFile dep : foundDependencies) {
@@ -200,18 +201,15 @@ public final class DefaultMinimizer implements Minimizer {
 	}
 
 	private void cleanWorkDir() throws IOException {
-		final Set<File> dirtyDirs = Directories.in(workDir).nameEndsWith(JarMaker.JAR_FILE_EXTENSION).list(); // dirty
-																												// ho
-																												// ho
-																												// ho
-																												// ;)
+		final Set<File> dirtyDirs = Directories.in(workDir).nameEndsWith(JarMaker.JAR_FILE_EXTENSION).list();
 		for (File dirty : dirtyDirs) {
 			Files.deleteRecursive(dirty);
 		}
 	}
 
-	private Set<ClassFile> forceIncludeDependenciesAsFiles(Set<JarFile> explicitIncludeJars,
-			Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
+	private Set<ClassFile> mandatoryDependenciesAsFiles(
+			  Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
+
 		final Set<ClassFile> result = Sets.newHashSet();
 
 		for (ClassName includeClass : explicitIncludeClasses) {
