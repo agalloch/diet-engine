@@ -23,13 +23,13 @@ import com.google.common.io.Resources;
 public class SourceFile implements Resolvable {
 
 	public static final String EXTENSION = "java";
-    public static final String PACKAGE_KEYWORD = "package";
-    public static final String IMPORT_KEYWORD = "import";
+	public static final String PACKAGE_KEYWORD = "package";
+	public static final String IMPORT_KEYWORD = "import";
 	public static final String WILDCARD_IMPORT_SUFFIX = "*";
 	public static final String CLASS_KEYWORD = "class";
-    public static final String PUBLIC_KEYWORD = "public";
-    public static final String COMMENT_START = "//";
-    public static final String BLOCK_COMMENT_START = "/*";
+	public static final String PUBLIC_KEYWORD = "public";
+	public static final String COMMENT_START = "//";
+	public static final String BLOCK_COMMENT_START = "/*";
 
 	private Set<ClassName> dependencies;
 	private final File source;
