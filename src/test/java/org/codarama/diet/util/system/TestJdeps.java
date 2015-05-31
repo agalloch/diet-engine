@@ -24,8 +24,7 @@ import java.util.jar.JarFile;
  *
  * Created by ayld on 5/29/2015.
  */
-@Category(IntegrationTest.class)
-public class TestJdeps implements IntegrationTest{
+public class TestJdeps {
 
     @Test
     public void findDependencies() throws IOException {
