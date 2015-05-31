@@ -11,7 +11,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.codarama.diet.util.annotation.NotThreadSafe;
 
 import com.google.common.base.Strings;
@@ -77,7 +80,7 @@ public final class Files { // XXX this is actually rather procedural ...
 	
 	private final File dir;
 	private boolean recursive = true;
-	private List<File> result = Lists.newLinkedList();
+	private Set<File> result = Sets.newHashSet();
 	
 	private String requiredName;
 	private String requiredExtension;
@@ -101,7 +104,7 @@ public final class Files { // XXX this is actually rather procedural ...
 		return this;
 	}
 	
-	public List<File> list() {
+	public Set<File> list() {
 		return inclusive();
 	}
 	
@@ -117,7 +120,7 @@ public final class Files { // XXX this is actually rather procedural ...
 		return result.iterator().next();
 	}
 	
-	public List<File> exclusive() {
+	public Set<File> exclusive() {
 		final Iterator<File> resultIter = result.iterator();
 		
 		if (!Strings.isNullOrEmpty(requiredName)) {
@@ -125,11 +128,11 @@ public final class Files { // XXX this is actually rather procedural ...
 			while (resultIter.hasNext()) {
 				final File file = resultIter.next();
 				final String name = file.getName();
-				final String nameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER)
-						                                .tokenize(name)
-						                                .firstToken();
-				
-				if (!nameNoExtension.equalsIgnoreCase(requiredName)) {
+
+                final String nameNoExtension;
+                nameNoExtension = getNameNoExtension(name);
+
+                if (!nameNoExtension.equalsIgnoreCase(requiredName)) {
 					resultIter.remove();
 				}
 			}
@@ -148,14 +151,21 @@ public final class Files { // XXX this is actually rather procedural ...
 				}
 			}
 		}
-		return ImmutableList.copyOf(result);
+		return ImmutableSet.copyOf(result);
+	}
+
+    private String getNameNoExtension(String name) {
+        if (name.contains(FILE_EXTENSION_DELIMITER)) {
+            return name.substring(0, name.lastIndexOf(FILE_EXTENSION_DELIMITER));
+        }
+        return name;
+    }
+
+    public Set<File> inclusive() {
+		return ImmutableSet.copyOf(result);
 	}
 	
-	public List<File> inclusive() {
-		return ImmutableList.copyOf(result);
-	}
-	
-	public List<File> all() throws IOException {
+	public Set<File> all() throws IOException {
 		if (!Strings.isNullOrEmpty(requiredName) || !Strings.isNullOrEmpty(requiredExtension)) {
 			return inclusive();
 		}
@@ -175,7 +185,7 @@ public final class Files { // XXX this is actually rather procedural ...
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		return ImmutableList.copyOf(result);
+		return ImmutableSet.copyOf(result);
 	}
 	
 	public Files named(final String name) throws IOException {
@@ -190,9 +200,11 @@ public final class Files { // XXX this is actually rather procedural ...
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 				final String filename = path.getFileName().toString();
-				final String filenameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER).tokenize(filename).firstToken();
-				
-				if (filenameNoExtension.equalsIgnoreCase(name)) {
+
+                final String filenameNoExtension;
+                filenameNoExtension = getNameNoExtension(filename);
+
+                if (filenameNoExtension.equalsIgnoreCase(name)) {
 					result.add(path.toFile());
 				}
 				

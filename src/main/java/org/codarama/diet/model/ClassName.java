@@ -47,7 +47,7 @@ public final class ClassName {
 	 * */
 	public ClassName(String qualifiedClassName) {
 		if (!isClassName(qualifiedClassName)) {
-			throw new IllegalArgumentException("invalid fully qualified class name: " + qualifiedClassName + ", expected: " + CLASS_NAME_VALIDATION_REGEX);
+			throw new IllegalArgumentException("invalid fully qualified class name: " + qualifiedClassName + ", expected: " + CLASS_NAME_VALIDATION_REGEX + ", actual: " + qualifiedClassName);
 		}
 		this.qualifiedClassName = qualifiedClassName;
 	}
