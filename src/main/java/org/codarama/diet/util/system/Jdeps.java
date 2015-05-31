@@ -90,9 +90,7 @@ public class Jdeps {
             final String[] cmdAndArgs = new String[args.length + 1];
             cmdAndArgs[0] = cmd;
 
-            for (int i = 1; i < cmdAndArgs.length; ++i) {
-                cmdAndArgs[i] = args[i - 1];
-            }
+            System.arraycopy(args, 0, cmdAndArgs, 1, cmdAndArgs.length - 1);
 
             final Process cmdProcess = new ProcessBuilder(cmdAndArgs).redirectErrorStream(true).start();
 
@@ -121,7 +119,7 @@ public class Jdeps {
      * This method makes the system call to a binary OS compatible.
      * Currently it:
      *   - adds .exe to binary calls for Windows
-     *   - quotes whole command to workaround spaces in paths
+     *   - quotes whole command to workaround spaces in paths for Windows
      *   - removes preceding slash given by env vars on Linux
      * */
     private String makeOsCompatible(String cmd) {
@@ -208,7 +206,7 @@ public class Jdeps {
 
         public Jdeps build() {
 
-            final StringBuffer spaceDelimitedClasspath = new StringBuffer();
+            final StringBuilder spaceDelimitedClasspath = new StringBuilder();
             for (JarFile jar : classpath) {
                 spaceDelimitedClasspath.append(jar.getName()).append(" ");
             }
@@ -216,7 +214,7 @@ public class Jdeps {
             final Jdeps newInstance = new Jdeps();
             newInstance.classpath = spaceDelimitedClasspath.toString().trim();
 
-            final StringBuffer spaceDelimitedClasses = new StringBuffer();
+            final StringBuilder spaceDelimitedClasses = new StringBuilder();
             for (ClassName className : classes) {
                 spaceDelimitedClasses.append(className.toString()).append(" ");
             }
