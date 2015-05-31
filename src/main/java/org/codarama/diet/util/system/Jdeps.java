@@ -122,12 +122,19 @@ public class Jdeps {
      * Currently it:
      *   - adds .exe to binary calls for Windows
      *   - quotes whole command to workaround spaces in paths
+     *   - removes preceding slash given by env vars on Linux
      * */
     private String makeOsCompatible(String cmd) {
         final String currentOsName = System.getProperty(OS_NAME_VAR_NAME);
         if (currentOsName.contains(WINDOWS_OS_NAME)) {
             // add .exe at the end of the binary
             return "\"" + Joiner.on(".").join(cmd, WINDOWS_EXECUTABLE_EXTENSION) + "\"";
+        }
+        else if (currentOsName.contains(LINUX_OS_NAME)) {
+
+            if (cmd.startsWith("/")) {
+                return cmd.replaceFirst("/", "");
+            }
         }
         return cmd;
     }
