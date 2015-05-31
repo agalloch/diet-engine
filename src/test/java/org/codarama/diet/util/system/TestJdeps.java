@@ -4,11 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Tokenizer;
 import org.codarama.diet.util.annotation.Immutable;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +24,8 @@ import java.util.jar.JarFile;
  *
  * Created by ayld on 5/29/2015.
  */
-public class TestJdeps {
+@Category(IntegrationTest.class)
+public class TestJdeps implements IntegrationTest{
 
     @Test
     public void findDependencies() throws IOException {
