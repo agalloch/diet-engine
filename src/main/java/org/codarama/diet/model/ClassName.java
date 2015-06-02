@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * The idea behind the class is to provide a model object that makes sure that a string is actually a class name and not 
  * something else, so one doesn't need to check 'by hand' every time.
  * */
-public final class ClassName {
+public final class ClassName implements Resolvable {
 
 	/** 
 	 * This regex only checks plausibility it doesn't check validity. For a validity check a comparison against Java's reserved words must be made.

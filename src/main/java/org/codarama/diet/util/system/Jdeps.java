@@ -27,6 +27,8 @@ import java.util.jar.JarFile;
  *
  * Created by ayld on 5/29/2015.
  */
+// TODO this class deals in both execing generic-ish shell commands and setting up proper jdeps call
+// TODO the part that deals in executing commands should be in a separate class
 public class Jdeps {
     private static final Logger LOG = LoggerFactory.getLogger(Jdeps.class);
 
@@ -51,11 +53,8 @@ public class Jdeps {
 
     private final String jdepsExecutablePath;
 
-    // a list of jar files, space delimited
-    private String classpath = "";
-
-    // a list of fully qualified class names, space delimited
-    private String classes = "";
+    private Set<JarFile> classpath;
+    private ClassName toLookFor;
 
     private Jdeps() {
         final String jdkLibPath = System.getProperty(LIB_PATH_VAR_NAME);
@@ -89,7 +88,6 @@ public class Jdeps {
 
             final String[] cmdAndArgs = new String[args.length + 1];
             cmdAndArgs[0] = cmd;
-
             System.arraycopy(args, 0, cmdAndArgs, 1, cmdAndArgs.length - 1);
 
             final Process cmdProcess = new ProcessBuilder(cmdAndArgs).redirectErrorStream(true).start();
@@ -184,13 +182,29 @@ public class Jdeps {
     }
 
     public Set<ClassName> findDependencies() {
-        final String cmdOutput = execShellCmd(jdepsExecutablePath, JDEPS_VERBOSE_OPTION, JDEPS_CLASSPATH_OPTION, classpath, classes);
+        // magic 2, because this is the number of options, -v and -cp
+        // magic 1, because we need to add the class we search for at the end
+        // we want to build this:
+        //   jdkInstallDir/bin/jdeps -v -cp jar1.jar jar2.jar com.company.Class
+        final String[] jdepsArgs = new String[2 + classpath.size() + 1];
+
+        jdepsArgs[0] = JDEPS_VERBOSE_OPTION;
+        jdepsArgs[1] = JDEPS_CLASSPATH_OPTION;
+
+        int count = 2;
+        for (JarFile jar : classpath) {
+            jdepsArgs[count] = jar.getName();
+            count++;
+        }
+        jdepsArgs[count] = toLookFor.toString();
+
+        final String cmdOutput = execShellCmd(jdepsExecutablePath, jdepsArgs);
         return parseOutput(cmdOutput);
     }
 
     public static class Builder {
         private Set<JarFile> classpath;
-        private Set<ClassName> classes;
+        private ClassName toLookFor;
 
         public static Builder searchInJars(Set<JarFile> searchInJars) {
             final Builder newInstance = new Builder();
@@ -199,26 +213,16 @@ public class Jdeps {
             return newInstance;
         }
 
-        public Builder forDependenciesOf(Set<ClassName> forDependencies) {
-            this.classes = forDependencies;
+        public Builder forDependenciesOf(ClassName forDependencies) {
+            this.toLookFor = forDependencies;
             return this;
         }
 
         public Jdeps build() {
-
-            final StringBuilder spaceDelimitedClasspath = new StringBuilder();
-            for (JarFile jar : classpath) {
-                spaceDelimitedClasspath.append(jar.getName()).append(" ");
-            }
-
             final Jdeps newInstance = new Jdeps();
-            newInstance.classpath = spaceDelimitedClasspath.toString().trim();
 
-            final StringBuilder spaceDelimitedClasses = new StringBuilder();
-            for (ClassName className : classes) {
-                spaceDelimitedClasses.append(className.toString()).append(" ");
-            }
-            newInstance.classes = spaceDelimitedClasses.toString().trim();
+            newInstance.classpath = this.classpath;
+            newInstance.toLookFor = this.toLookFor;
 
             return newInstance;
         }

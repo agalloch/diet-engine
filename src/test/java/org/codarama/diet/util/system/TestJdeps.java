@@ -32,13 +32,18 @@ public class TestJdeps {
         final JarFile guavaJar = new JarFile(
                 Files.in(pathToLibraries).nonRecursive().named("guava-14.0.1").single()
         );
+        final JarFile jar2Jar = new JarFile(
+                Files.in(pathToLibraries).nonRecursive().named("jar2").single()
+        );
 
-        final Set<JarFile> jars = ImmutableSet.of(guavaJar);
-        final Set<ClassName> classes = ImmutableSet.of(new ClassName("com.google.common.collect.Sets"));
+        final Set<JarFile> jars = ImmutableSet.of(guavaJar, jar2Jar);
+        final ClassName resolve = new ClassName("com.google.common.collect.Sets");
 
-        final Jdeps jdeps = Jdeps.Builder.searchInJars(jars).forDependenciesOf(classes).build();
+        final Jdeps jdeps = Jdeps.Builder.searchInJars(jars).forDependenciesOf(resolve).build();
 
         final Set<ClassName> foundDependencies = jdeps.findDependencies();
+
+        System.out.println(foundDependencies);
 
         Assert.assertNotNull(foundDependencies);
         Assert.assertTrue(foundDependencies.size() == 27);
