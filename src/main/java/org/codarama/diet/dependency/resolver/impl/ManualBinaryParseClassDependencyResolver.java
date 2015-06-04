@@ -90,8 +90,12 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 			// which is odd
 			// TODO check if there is a way to return dependencies dot delimited
 			dependency = dependency.replaceAll("/", ".");
-			
-			foundDependencies.add(new ClassName(dependency));
+
+            // don't return the class we're resolving as a dependency
+            final boolean isNotResolvedClass = !dependency.equals(javaClass.getClassName());
+            if (isNotResolvedClass) {
+                foundDependencies.add(new ClassName(dependency));
+            }
 		}
 
 		private Set<ClassName> getFoundDependencies() {

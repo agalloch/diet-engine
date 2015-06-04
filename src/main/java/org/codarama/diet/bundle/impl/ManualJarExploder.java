@@ -65,7 +65,9 @@ public class ManualJarExploder extends ListenableComponent implements JarExplode
 			} else {
 				final File fileEntry = new File(entryFilename);
 
-				if (!fileEntry.getParentFile().exists() && !fileEntry.getParentFile().mkdirs()) {
+                final boolean parentDirDoesntExist = !fileEntry.getParentFile().exists();
+                final boolean couldntCreateParentDir = !fileEntry.getParentFile().mkdirs();
+                if (parentDirDoesntExist && couldntCreateParentDir) {
 					throw new ExtractionException("could not create: " + fileEntry + ", contained in jar: " + jarName);
 				}
 

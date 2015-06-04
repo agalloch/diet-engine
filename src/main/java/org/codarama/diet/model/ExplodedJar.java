@@ -1,14 +1,10 @@
 package org.codarama.diet.model;
 
-import java.io.File;
-import java.util.jar.JarFile;
-
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.hash.Funnel;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
-import com.google.common.hash.PrimitiveSink;
+
+import java.io.File;
+import java.util.Objects;
+import java.util.jar.JarFile;
 
 /** 
  * Represents an extracted (exploded) .jar file.
@@ -53,22 +49,8 @@ public class ExplodedJar {
 
 	@Override
 	public int hashCode() {
-		final HashFunction hf = Hashing.md5();
-		
-		return hf.newHasher()
-				.putString(extractedPath)
-				.putObject(archive, new Funnel<JarFile>() {
-
-					@Override
-					public void funnel(JarFile from, PrimitiveSink into) {
-						into
-							.putString(from.getName())
-							.putString(Optional.fromNullable(from.getComment()).or(""));
-					}
-					private static final long serialVersionUID = 3109141395123855989L;
-
-		}).hash().asInt();
-	}
+		return Objects.hash(extractedPath, archive);
+    }
 
 	@Override
 	public boolean equals(Object obj) {

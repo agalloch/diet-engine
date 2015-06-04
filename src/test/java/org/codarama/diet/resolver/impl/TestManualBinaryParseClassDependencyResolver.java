@@ -24,9 +24,14 @@ public class TestManualBinaryParseClassDependencyResolver {
 	@Test
 	public void resolve() throws IOException {
 		final Set<ClassName> resolved = classDependencyResolver.resolve(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"));
-		
+
 		Assert.assertTrue(resolved != null);
 		Assert.assertTrue(!resolved.isEmpty());
-		Assert.assertTrue(resolved.size() == 10);
+
+        // should not return resolved class as a dependency
+        Assert.assertFalse(resolved.contains(new ClassName("org.primefaces.model.TreeTableModel")));
+
+        Assert.assertTrue(resolved.size() == 9);
+
 	}
 }

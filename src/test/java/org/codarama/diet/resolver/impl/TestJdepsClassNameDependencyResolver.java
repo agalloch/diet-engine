@@ -1,7 +1,11 @@
 package org.codarama.diet.resolver.impl;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.google.common.eventbus.EventBus;
 import com.google.common.io.Resources;
+import org.codarama.diet.bundle.impl.ManualJarExploder;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.dependency.resolver.impl.JdepsClassNameDependencyResolver;
 import org.codarama.diet.model.ClassFile;
@@ -19,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -28,6 +33,8 @@ import java.util.jar.JarFile;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testJdepsClassNameDependencyResolver.xml"})
 public class TestJdepsClassNameDependencyResolver {
+
+    private static final String JAVA_CORE_PACKAGE = "java";
 
     @Autowired
     private DependencyResolver<ClassFile> classDependencyResolver;
@@ -62,7 +69,9 @@ public class TestJdepsClassNameDependencyResolver {
         Assert.assertNotNull(resolverResult);
 
         final Set<ClassName> jdepsResult = Jdeps.Builder
-                .searchInJars(ImmutableSet.of(guavaJar, jar2Jar))
+                .searchInJars(
+                        ImmutableSet.of(guavaJar, jar2Jar)
+                )
                 .forDependenciesOf(classNameToResolve)
                 .build()
                 .findDependencies();
@@ -71,8 +80,41 @@ public class TestJdepsClassNameDependencyResolver {
         Assert.assertEquals(resolverResult, jdepsResult);
     }
 
+    @Test
     public void jdepsResolverVsBinaryClassResolver() throws IOException {
-        // TODO
+        Set<ClassName> classResolverResult = classDependencyResolver.resolve(
+                ClassFile.fromFilepath(
+                        toPath(Resources.getResource("test-classes/guava-14.0.1/com/google/common/collect/Sets.class"))
+                )
+        );
+        Assert.assertNotNull(classResolverResult);
+        Assert.assertNotNull(classResolverResult.size() > 0);
+
+        classResolverResult = removeJavaApiDeps(classResolverResult);
+        Assert.assertNotNull(classResolverResult);
+        Assert.assertNotNull(classResolverResult.size() > 0);
+
+        final Set<ClassName> jdepsResolverResult = jdepsResolver.resolve(classNameToResolve);
+        Assert.assertNotNull(jdepsResolverResult);
+        Assert.assertNotNull(jdepsResolverResult.size() > 0);
+
+        final Ordering<Object> dependencyOrdering = Ordering.usingToString();
+        final List<ClassName> sortedClassResolverResult = dependencyOrdering.sortedCopy(classResolverResult);
+        final List<ClassName> sortedJdepsResolverResult = dependencyOrdering.sortedCopy(jdepsResolverResult);
+
+        Assert.assertEquals(sortedClassResolverResult, sortedJdepsResolverResult);
+    }
+
+    private Set<ClassName> removeJavaApiDeps(Set<ClassName> from) {
+        final Set<ClassName> result = Sets.newHashSet();
+        for (ClassName dep : from) {
+            // skip java lang dependencies
+            if (dep.toString().startsWith(JAVA_CORE_PACKAGE)) {
+                continue;
+            }
+            result.add(dep);
+        }
+        return result;
     }
 
     private String toPath(URL uri) {
