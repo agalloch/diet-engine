@@ -23,7 +23,7 @@ public class TestClassFile {
 		
 		Assert.assertTrue(dependencies != null);
 
-        final int expectedCount = 9;
+        final int expectedCount = 8;
         boolean isDepCountExpected = dependencies.size() == expectedCount;
 
         if (!isDepCountExpected) {

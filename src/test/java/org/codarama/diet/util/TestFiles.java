@@ -70,7 +70,7 @@ public class TestFiles {
 				new File(Resources.getResource("test-classes/CoreRenderer.class").toURI()),
 				new File(Resources.getResource("test-classes/PrimePartialViewContext.class").toURI()),
 				new File(Resources.getResource("test-classes/ValidCoffee.java").toURI()),
-				new File(Resources.getResource("test-classes/guava-14.0.1.jar").toURI())
+				new File(Resources.getResource("test-classes/test-lib-dir/guava-14.0.1.jar").toURI())
 		);
 		
 		for (File testFile : testFiles) {

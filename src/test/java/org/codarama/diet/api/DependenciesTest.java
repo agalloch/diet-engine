@@ -16,10 +16,10 @@ public class DependenciesTest {
 		final Set<ClassName> dependencies = Dependencies
 				.ofClass(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"))
 				.set();
-		
+
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());
-		Assert.assertTrue(dependencies.size() == 10);
+		Assert.assertTrue(dependencies.size() == 9);
 	}
 	
 	@Test

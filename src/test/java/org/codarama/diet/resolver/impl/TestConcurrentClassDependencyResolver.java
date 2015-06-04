@@ -27,6 +27,6 @@ public class TestConcurrentClassDependencyResolver {
 		
 		Assert.assertTrue(resolved != null);
 		Assert.assertTrue(!resolved.isEmpty());
-		Assert.assertTrue(resolved.size() == 10);
+		Assert.assertTrue(resolved.size() == 9);
 	}
 }
