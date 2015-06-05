@@ -41,7 +41,6 @@ public class TestJdepsClassNameDependencyResolver {
     private JdepsClassNameDependencyResolver jdepsResolver;
 
     private ClassName classNameToResolve;
-    private ClassFile classFileToResolve; // TODO
     private JarFile guavaJar;
     private JarFile jar2Jar;
 
@@ -56,7 +55,7 @@ public class TestJdepsClassNameDependencyResolver {
                 Files.in(pathToLibraries).nonRecursive().named("jar2").single()
         );
 
-        this. jdepsResolver = JdepsClassNameDependencyResolver.Builder.jars(
+        this.jdepsResolver = JdepsClassNameDependencyResolver.Builder.jars(
                 ImmutableSet.of(guavaJar, jar2Jar)
         ).build();
 

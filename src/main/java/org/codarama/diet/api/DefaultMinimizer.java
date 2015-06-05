@@ -31,7 +31,7 @@ import com.google.common.collect.Sets;
  * The {@link DefaultMinimizer} is a simple implementation of the {@link Minimizer} interface that uses the
  * {@link DependencyMatcherStrategy} to locate the dependencies that we want to include in the minimized result
  */
-public final class DefaultMinimizer implements Minimizer {
+public class DefaultMinimizer implements Minimizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
@@ -265,8 +265,8 @@ public final class DefaultMinimizer implements Minimizer {
 	}
 
 	private Set<ClassFile> findInLib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
-        final int dependenciesCount = dependencyNames.size();
-        LOG.debug("Looking for " + dependenciesCount + " dependencies in " + libClasses.size() + " lib classes");
+		final int dependenciesCount = dependencyNames.size();
+      LOG.debug("Looking for " + dependenciesCount + " dependencies in " + libClasses.size() + " lib classes");
 
 		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependenciesCount);
 		for (ClassName dependencyName : dependencyNames) {
@@ -286,7 +286,7 @@ public final class DefaultMinimizer implements Minimizer {
 				}
 			}
 		}
-        LOG.debug("Need to include " + result.size() + " lib classes for these " + dependenciesCount + " dependencies");
+      LOG.debug("Need to include " + result.size() + " lib classes for these " + dependenciesCount + " dependencies");
 		return result;
 	}
 
