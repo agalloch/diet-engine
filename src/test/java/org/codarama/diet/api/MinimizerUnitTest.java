@@ -1,8 +1,3 @@
-/* ***************************************************************************
- * Copyright 2014 VMware, Inc. All rights reserved. -- VMware Confidential
- * **************************************************************************
- */
-
 package org.codarama.diet.api;
 
 import static org.mockito.Mockito.*;

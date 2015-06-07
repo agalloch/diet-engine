@@ -101,7 +101,7 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 		if (classFile == null) {
 			throw new IllegalArgumentException("null argument not allowed");
 		}
-		return fromFilepath(classFile.getAbsolutePath());
+		return new ClassFile(classFile);
 	}
 	
 	/** 

@@ -9,6 +9,7 @@ public enum Components {
 	CLASS_DEPENDENCY_RESOLVER("classDependencyResolver"),
 	SOURCE_DEPENDENCY_RESOLVER("sourceDependencyResolver"),
 	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher"),
+    BCEL_MINIMIZATION_STRATEGY("bcelMinimizationStrategy"),
 	EVENT_BUS("statusUpdateEventBus");
 
 	private final ApplicationContext context;

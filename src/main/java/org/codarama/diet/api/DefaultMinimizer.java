@@ -1,18 +1,14 @@
 package org.codarama.diet.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.jar.JarFile;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import org.codarama.diet.api.minimization.MinimizationStrategy;
 import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.api.reporting.ReportBuilder;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
-import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.SourceFile;
@@ -23,9 +19,12 @@ import org.codarama.diet.util.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * The {@link DefaultMinimizer} is a simple implementation of the {@link Minimizer} interface that uses the
@@ -34,14 +33,10 @@ import com.google.common.collect.Sets;
 public class DefaultMinimizer implements Minimizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);
-	private static final String JAVA_API_ROOT_PACKAGE = "java";
 
-	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.getInstance();
-	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
+    private final MinimizationStrategy<SourceFile, File> minimizationStrategy = Components.BCEL_MINIMIZATION_STRATEGY.getInstance();
 
 	private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
-	private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
 	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance();
 
 	// this is usually the OS temp dir
@@ -163,29 +158,22 @@ public class DefaultMinimizer implements Minimizer {
 
 		// start by analysing all the source files
 		final Set<SourceFile> sources = Sets.newHashSet();
-		for (File sourceFile : Files.in(sourceDir.getAbsolutePath()).withExtension(SourceFile.EXTENSION).list()) {
-			sources.add(SourceFile.fromFile(sourceFile));
-		}
+        sources.addAll(
+                Files.in(sourceDir.getAbsolutePath())
+                        .withExtension(SourceFile.EXTENSION)
+                        .list()
+                        .stream()
+                        .map(SourceFile::fromFile)
+                        .collect(Collectors.toList())
+        );
+        final Set<ClassFile> foundDependencies = this.minimizationStrategy.minimize(sources, libraryLocations);
 
-		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
+        final Set<File> libClasses = Sets.newHashSet(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
+        reportBuilder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
 
-		// TODO decide on what to do if there are no source dependencies
-
-		explodeJars(libraryLocations);
-
-		final Set<File> libClasses = Sets.newHashSet(Files.in(workDir).withExtension(ClassFile.EXTENSION).list());
-
-		// find sources dependencies
-		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
-
-		// recursively find class file dependencies until we find them all
-		addDependenciesOfDependencies(foundDependencies, libClasses);
-
-		reportBuilder.sources(sources).allLibs(libClasses).minimizedLibs(foundDependencies);
-
-		// add user defined mandatory dependencies
-		final Set<ClassFile> mandatoryDependencies =
-				  mandatoryDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses, libClasses);
+        // add user defined mandatory dependencies
+        final Set<ClassFile> mandatoryDependencies =
+				  mandatoryDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses);
 		foundDependencies.addAll(mandatoryDependencies);
 
 		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(foundDependencies.size());
@@ -208,99 +196,29 @@ public class DefaultMinimizer implements Minimizer {
 	}
 
 	private Set<ClassFile> mandatoryDependenciesAsFiles(
-			  Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
+			  Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses) throws IOException {
 
-		final Set<ClassFile> result = Sets.newHashSet();
+        explicitJarExploder.explode(explicitIncludeJars);
 
-		for (ClassName includeClass : explicitIncludeClasses) {
+        final Set<ClassFile> result = Sets.newHashSet();
+        result.addAll(
+                Files.in(explicitOutDir)
+                        .withExtension(ClassFile.EXTENSION)
+                        .list()
+                        .stream()
+                        .map(ClassFile::fromFile)
+                        .collect(Collectors.toList())
+        );
 
-			final Set<ClassFile> foundInLib = findInLib(ImmutableSet.of(includeClass), libClasses);
-			if (foundInLib.size() < 1) {
-				throw new IllegalStateException("can't find user defined class: " + includeClass);
-			}
-			result.addAll(foundInLib);
-		}
-
-		explicitJarExploder.explode(explicitIncludeJars);
-
-		for (File extracted : Files.in(explicitOutDir).withExtension(ClassFile.EXTENSION).list()) {
-			result.add(ClassFile.fromFile(extracted));
-		}
-
+        for (ClassName includeClassName : explicitIncludeClasses) {
+            final File includeClass;
+            try {
+                includeClass = Files.in(explicitOutDir).named(includeClassName.shortName()).single();
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("could not add mandatory class: " + includeClassName, e);
+            }
+            result.add(ClassFile.fromFile(includeClass));
+        }
 		return result;
-	}
-
-	private Set<ClassFile> addDependenciesOfDependencies(Set<ClassFile> deps, final Set<File> libClasses)
-			throws IOException {
-		removeJavaApiDeps(deps);
-
-		final int sizeBeforeResolve = deps.size();
-
-		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
-        LOG.debug("Found " + (deps.size() - sizeBeforeResolve) + " new lib classes for inclusion");
-		if (deps.size() == sizeBeforeResolve) {
-			return deps;
-		}
-
-		return addDependenciesOfDependencies(deps, libClasses);
-	}
-
-	private boolean isJavaApiDep(ClassName dep) {
-		return dep.toString().startsWith(JAVA_API_ROOT_PACKAGE);
-	}
-
-	private boolean isJavaApiDep(ClassFile dep) {
-		return dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE);
-	}
-
-	private void removeJavaApiDeps(Set<ClassFile> deps) {
-		for (Iterator<ClassFile> iterator = deps.iterator(); iterator.hasNext();) {
-
-			final ClassFile dep = iterator.next();
-
-			if (isJavaApiDep(dep)) {
-				iterator.remove();
-			}
-		}
-	}
-
-	private Set<ClassFile> findInLib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
-		final int dependenciesCount = dependencyNames.size();
-      LOG.debug("Looking for " + dependenciesCount + " dependencies in " + libClasses.size() + " lib classes");
-
-		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependenciesCount);
-		for (ClassName dependencyName : dependencyNames) {
-			if (isJavaApiDep(dependencyName)) {
-				continue;
-			}
-
-			final Iterator<File> libClassesIter = libClasses.iterator();
-			while (libClassesIter.hasNext()) {
-
-				final File libClass = libClassesIter.next();
-				final ClassFile libClassFile = ClassFile.fromFile(libClass);
-
-				if (dependencyMatcherStrategy.matches(dependencyName, libClassFile)) {
-					result.add(libClassFile);
-					libClassesIter.remove();
-				}
-			}
-		}
-      LOG.debug("Need to include " + result.size() + " lib classes for these " + dependenciesCount + " dependencies");
-		return result;
-	}
-
-	private void explodeJars(Set<File> libraryLocations) throws IOException {
-		final Set<JarFile> libJars = Sets.newHashSet();
-
-		for (File jarFile : libraryLocations) {
-			try {
-				libJars.add(new JarFile(jarFile));
-			} catch (IOException e) {
-				LOG.error("Error processing dependency " + jarFile.getAbsolutePath(), e);
-			}
-		}
-
-		libJarExploder.explode(libJars);
 	}
 }

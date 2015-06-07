@@ -74,7 +74,7 @@ import com.google.common.collect.Lists;
  *  
  * */
 @NotThreadSafe
-public final class Files { // XXX this is actually rather procedural ...
+public class Files { // XXX this is actually rather procedural ...
 	
 	private static final String FILE_EXTENSION_DELIMITER = ".";
 	
