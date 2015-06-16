@@ -1,6 +1,7 @@
 package org.codarama.diet.api.minimization;
 
 import com.google.common.collect.ImmutableSet;
+import org.codarama.diet.api.minimization.impl.BcelMinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy;
@@ -30,7 +31,7 @@ import org.codarama.diet.model.ClassName;
 import java.io.File;
 
 /**
- * Tests {@link org.codarama.diet.api.minimization.BcelMinimizationStrategy}
+ * Tests {@link BcelMinimizationStrategy}
  *
  * Created by ayld on 6/6/2015.
  */

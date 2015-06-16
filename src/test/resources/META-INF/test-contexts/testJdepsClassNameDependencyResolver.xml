@@ -11,4 +11,7 @@
 
     <import resource="testManualBinaryParseClassDependencyResolver.xml"/>
 
+    <bean id="jdepsDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.JdepsClassNameDependencyResolver" parent="parentResolver">
+    </bean>
+
 </beans>

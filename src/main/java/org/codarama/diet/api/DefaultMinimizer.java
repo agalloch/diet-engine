@@ -1,5 +1,6 @@
 package org.codarama.diet.api;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  * The {@link DefaultMinimizer} is a simple implementation of the {@link Minimizer} interface that uses the
  * {@link DependencyMatcherStrategy} to locate the dependencies that we want to include in the minimized result
  */
+@Beta
 public class DefaultMinimizer implements Minimizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import com.google.common.annotations.Beta;
 import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.model.ClassName;
 
@@ -14,6 +15,7 @@ import org.codarama.diet.model.ClassName;
  * pattern and providing the API frontend of Diet's jar minimizing functionality.
  * </p>
  */
+@Beta
 public interface Minimizer {
 
 	/**

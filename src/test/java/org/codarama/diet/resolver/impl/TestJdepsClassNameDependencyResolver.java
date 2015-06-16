@@ -3,16 +3,14 @@ package org.codarama.diet.resolver.impl;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import com.google.common.eventbus.EventBus;
 import com.google.common.io.Resources;
-import org.codarama.diet.bundle.impl.ManualJarExploder;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.dependency.resolver.impl.JdepsClassNameDependencyResolver;
 import org.codarama.diet.model.ClassFile;
+import org.codarama.diet.model.ClassInClasspath;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Tokenizer;
-import org.codarama.diet.util.system.Jdeps;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +26,9 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 /**
+ * Tests whether results from {@link JdepsClassNameDependencyResolver}
+ * and {@link org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver} match.
+ *
  * Created by ayld on 6/2/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +39,9 @@ public class TestJdepsClassNameDependencyResolver {
 
     @Autowired
     private DependencyResolver<ClassFile> classDependencyResolver;
-    private JdepsClassNameDependencyResolver jdepsResolver;
+
+    @Autowired
+    private JdepsClassNameDependencyResolver jdepsDependencyResolver;
 
     private ClassName classNameToResolve;
     private JarFile guavaJar;
@@ -55,28 +58,7 @@ public class TestJdepsClassNameDependencyResolver {
                 Files.in(pathToLibraries).nonRecursive().named("jar2").single()
         );
 
-        this.jdepsResolver = JdepsClassNameDependencyResolver.Builder.jars(
-                ImmutableSet.of(guavaJar, jar2Jar)
-        ).build();
-
         this.classNameToResolve =  new ClassName("com.google.common.collect.Sets");
-    }
-
-    @Test
-    public void jdepsVsJdepsResolver() throws IOException {
-        final Set<ClassName> resolverResult = jdepsResolver.resolve(classNameToResolve);
-        Assert.assertNotNull(resolverResult);
-
-        final Set<ClassName> jdepsResult = Jdeps.Builder
-                .searchInJars(
-                        ImmutableSet.of(guavaJar, jar2Jar)
-                )
-                .forDependenciesOf(classNameToResolve)
-                .build()
-                .findDependencies();
-        Assert.assertNotNull(jdepsResult);
-
-        Assert.assertEquals(resolverResult, jdepsResult);
     }
 
     @Test
@@ -93,7 +75,15 @@ public class TestJdepsClassNameDependencyResolver {
         Assert.assertNotNull(classResolverResult);
         Assert.assertNotNull(classResolverResult.size() > 0);
 
-        final Set<ClassName> jdepsResolverResult = jdepsResolver.resolve(classNameToResolve);
+        final ClassInClasspath toResolve = ClassInClasspath.Builder.newInstance()
+                .clazz(classNameToResolve)
+                .classpath(
+                        ImmutableSet.of(
+                                guavaJar, jar2Jar
+                        )
+                ).build();
+
+        final Set<ClassName> jdepsResolverResult = jdepsDependencyResolver.resolve(toResolve);
         Assert.assertNotNull(jdepsResolverResult);
         Assert.assertNotNull(jdepsResolverResult.size() > 0);
 

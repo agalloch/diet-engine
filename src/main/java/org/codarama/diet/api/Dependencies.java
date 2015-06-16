@@ -1,5 +1,6 @@
 package org.codarama.diet.api;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.model.ClassFile;
@@ -10,6 +11,7 @@ import org.codarama.diet.util.Components;
 import java.io.IOException;
 import java.util.Set;
 
+@Beta
 public final class Dependencies {
 	
 	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();

@@ -1,6 +1,7 @@
-package org.codarama.diet.api.minimization;
+package org.codarama.diet.api.minimization.impl;
 
 import com.google.common.collect.Sets;
+import org.codarama.diet.api.minimization.MinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
@@ -24,7 +25,7 @@ import java.util.jar.JarFile;
  *
  * Created by ayld on 6/6/2015.
  */
-public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile, File>{
+public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile, File> {
     private static final Logger LOG = LoggerFactory.getLogger(BcelMinimizationStrategy.class);
     private static final String JAVA_API_ROOT_PACKAGE = "java";
 

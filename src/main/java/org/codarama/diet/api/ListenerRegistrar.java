@@ -1,9 +1,11 @@
 package org.codarama.diet.api;
 
+import com.google.common.annotations.Beta;
 import org.codarama.diet.util.Components;
 
 import com.google.common.eventbus.EventBus;
 
+@Beta
 public final class ListenerRegistrar {
 
 	private final Object[] listeners;

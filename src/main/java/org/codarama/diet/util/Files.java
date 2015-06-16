@@ -199,10 +199,13 @@ public class Files { // XXX this is actually rather procedural ...
 
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-				final String filename = path.getFileName().toString();
 
-                final String filenameNoExtension;
-                filenameNoExtension = getNameNoExtension(filename);
+				if (path.toFile().isDirectory()) {
+					return FileVisitResult.CONTINUE;
+				}
+
+				final String filename = path.getFileName().toString();
+                final String filenameNoExtension = getNameNoExtension(filename);
 
                 if (filenameNoExtension.equalsIgnoreCase(name)) {
 					result.add(path.toFile());
