@@ -95,7 +95,6 @@ public class JdkToolExecutor {
      * Currently it:
      *   - adds .exe to binary calls for Windows
      *   - quotes whole command to workaround spaces in paths for Windows
-     *   - removes preceding slash given by env vars on Linux
      * */
     private String makeOsCompatible(String cmd) {
         // XXX might consider polymorphism instead of forks here if this gets any bigger
@@ -105,14 +104,6 @@ public class JdkToolExecutor {
         // Windows
         if (currentOsName.contains(WINDOWS_OS_NAME)) {
             return "\"" + Joiner.on(".").join(cmd, WINDOWS_EXECUTABLE_EXTENSION) + "\"";
-        }
-
-        // Linux
-        else if (currentOsName.contains(LINUX_OS_NAME)) {
-
-            if (cmd.startsWith("/")) {
-                return cmd.replaceFirst("/", "");
-            }
         }
 
         // no modification needed
