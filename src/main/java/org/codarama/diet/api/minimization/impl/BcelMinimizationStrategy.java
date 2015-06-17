@@ -9,7 +9,6 @@ import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.util.Files;
-import org.codarama.diet.util.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -20,6 +19,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import static org.codarama.diet.util.system.JdkSettings.JAVA_ROOT_PACKAGE;
+
 /**
  * A {@link org.codarama.diet.api.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
  *
@@ -27,7 +28,6 @@ import java.util.jar.JarFile;
  */
 public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile, File> {
     private static final Logger LOG = LoggerFactory.getLogger(BcelMinimizationStrategy.class);
-    private static final String JAVA_API_ROOT_PACKAGE = "java";
 
     private DependencyMatcherStrategy dependencyMatcherStrategy;
     private DependencyResolver<ClassFile> classDependencyResolver;
@@ -35,9 +35,6 @@ public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile
 
     private JarExploder libJarExploder;
     private Files fileFinder;
-
-    // this is usually the OS temp dir
-    private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
 
     public Set<ClassFile> minimize(Set<SourceFile> sources, Set<File> libs) throws IOException {
         final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
@@ -107,11 +104,11 @@ public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile
     }
 
     private boolean isJavaApiDep(ClassFile dep) {
-        return dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE);
+        return dep.qualifiedName().toString().startsWith(JAVA_ROOT_PACKAGE);
     }
 
     private boolean isJavaApiDep(ClassName dep) {
-        return dep.toString().startsWith(JAVA_API_ROOT_PACKAGE);
+        return dep.toString().startsWith(JAVA_ROOT_PACKAGE);
     }
 
     private void explodeJars(Set<File> libraryLocations) throws IOException {

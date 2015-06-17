@@ -10,6 +10,12 @@ import java.util.Set;
  * Intended to be used in {@link org.codarama.diet.api.Minimizer}s to allow for different minimization approaches.
  * Also to allow decoupling configuration from the Minimizer API.
  *
+ * Generic arguments:
+ *   - ST(source type): the type of the sources to resolve from, e.x. SourceFile, ClassName etc.
+ *   - LT(libraries type): the type of the libraries to resolve from, e.x. JarFile, ClassFile etc.
+ *
+ *   Generally ST can be anything Resolveble, LT can be absolutely anything.
+ *
  * Created by ayld on 6/6/2015.
  */
 public interface MinimizationStrategy<ST extends Resolvable, LT> {

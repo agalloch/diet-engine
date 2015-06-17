@@ -9,6 +9,9 @@ import org.codarama.diet.model.ClassName;
 
 import org.springframework.beans.factory.annotation.Required;
 
+/**
+ * A matcher strategy that requires all its conditions to be satisfied in order for its match method to return true.
+ * */
 public class UnanimousBasedDependencyMatcherStrategy implements DependencyMatcherStrategy{
 
 	private Set<MatchingCondition> conditions;
