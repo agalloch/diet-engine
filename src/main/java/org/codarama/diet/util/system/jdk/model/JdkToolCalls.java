@@ -2,6 +2,7 @@ package org.codarama.diet.util.system.jdk.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import org.codarama.diet.util.annotation.NotThreadSafe;
 import org.codarama.diet.util.system.jdk.JdkToolExecutor;
 
 import java.util.Arrays;
@@ -57,12 +58,15 @@ public enum JdkToolCalls {
 
     /**
      * Executes the call to the OS shell.
+     * Also clears arguments to the current call once it has been executed on the OS shell.
      *
      * @return the ouput of the shell call, on its System.out stream
      * @throws RuntimeException for anything on System.err
      * */
     public String exec() {
-        return this.executor.execShellCmd(this);
+        final String result = this.executor.execShellCmd(this);
+        this.args.clear();
+        return result;
     }
 
     /**
