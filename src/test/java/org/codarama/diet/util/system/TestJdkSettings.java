@@ -7,13 +7,14 @@ package org.codarama.diet.util.system;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import org.codarama.diet.util.system.jdk.JdkSettings;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
 
 /**
- * Tests {@link JdkSettings}.
+ * Tests {@link org.codarama.diet.util.system.jdk.JdkSettings}.
  *
  * Created by siliev on 15-6-19.
  */

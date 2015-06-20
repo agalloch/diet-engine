@@ -1,11 +1,9 @@
-package org.codarama.diet.util.system;
+package org.codarama.diet.util.system.jdk;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import org.codarama.diet.util.system.jdk.model.JdkToolCalls;
 
 import java.io.File;
-import java.nio.file.Path;
 
 /**
  * A utility generally intended for JdkSettings setting discovering.

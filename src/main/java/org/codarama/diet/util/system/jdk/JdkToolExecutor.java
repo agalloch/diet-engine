@@ -2,7 +2,6 @@ package org.codarama.diet.util.system.jdk;
 
 import com.google.common.base.Joiner;
 import com.google.common.io.CharStreams;
-import org.codarama.diet.util.system.JdkSettings;
 import org.codarama.diet.util.system.jdk.model.JdkToolCalls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

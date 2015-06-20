@@ -20,9 +20,9 @@ import java.util.Set;
  *
  * Created by Ayld on 6/11/15.
  */
+// TODO this should not be an enum as it gets stateful and mutable
 public enum JdkToolCalls {
 
-    JDEPS_VERBOSE_CLASSPATH("jdeps", "-v", "-cp"),
     JAVA_VERSION("java", "-version");
 
     private final String name;

@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-import static org.codarama.diet.util.system.JdkSettings.JAVA_ROOT_PACKAGE;
+import static org.codarama.diet.util.system.jdk.JdkSettings.JAVA_ROOT_PACKAGE;
 
 /**
  * A {@link org.codarama.diet.api.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
