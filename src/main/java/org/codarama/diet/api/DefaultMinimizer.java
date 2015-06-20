@@ -4,7 +4,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import org.codarama.diet.api.minimization.MinimizationStrategy;
+import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.api.reporting.ReportBuilder;
 import org.codarama.diet.bundle.JarExploder;
@@ -38,7 +38,8 @@ public class DefaultMinimizer implements Minimizer {
 
     private final MinimizationStrategy<SourceFile, File> minimizationStrategy = Components.BCEL_MINIMIZATION_STRATEGY.getInstance();
 
-	private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
+	protected final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
+
 	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance();
 
 	// this is usually the OS temp dir
@@ -46,9 +47,9 @@ public class DefaultMinimizer implements Minimizer {
 	// this is where explicitly included dependencies go
 	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue();
 
-	private File outJar = new File(Joiner.on(File.separator).join(workDir, Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
+	protected File outJar = new File(Joiner.on(File.separator).join(workDir, Settings.DEFAULT_RESULT_JAR_NAME.getValue()));
 
-	private final File sourceDir;
+	protected final File sourceDir;
 
 	private Set<JarFile> forceIncludeJars = Sets.newHashSet();
 	private Set<ClassName> forceIncludeClasses = Sets.newHashSet();
@@ -65,7 +66,7 @@ public class DefaultMinimizer implements Minimizer {
 	 * @param pathToSources
 	 *            the full path to the root sources directory
 	 */
-	private DefaultMinimizer(File pathToSources) {
+	protected DefaultMinimizer(File pathToSources) {
 		final File outJarDir = new File(outJar.getParent());
 
 		if (!outJarDir.exists() && !outJarDir.mkdirs()) {

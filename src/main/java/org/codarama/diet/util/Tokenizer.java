@@ -25,23 +25,19 @@ public final class Tokenizer {
 
 	public Tokenizer tokenize(String string) {
 		if (string.contains(delimiter)) {
-			tokens = Lists.newArrayList(Splitter.on(delimiter).split(string));
+			tokens = Lists.newArrayList(Splitter.on(delimiter).omitEmptyStrings().split(string));
 		}
 		return this;
 	}
 	
 	public List<String> tokensIn(Range<Integer> range) {
-      final boolean doesntHaveUpperAndLowerBounds = !(range.hasUpperBound() && range.hasLowerBound());
-      if (doesntHaveUpperAndLowerBounds) {
-			throw new IllegalArgumentException("boundless ranges are not currently supported");
-		}
-		
+
 		if (tokens.isEmpty()) {
 			return tokens;
 		}
 		
-		final Integer lower = range.lowerEndpoint();
-		final Integer upper = range.upperEndpoint();
+		final Integer lower = range.hasLowerBound() ? range.lowerEndpoint() : 0;
+		final Integer upper = range.hasUpperBound() ? range.upperEndpoint() : tokens.size();
 		
 		if (lower < 0) {
 			throw new IndexOutOfBoundsException("lower bound: " + lower + ", is negative");
@@ -55,7 +51,7 @@ public final class Tokenizer {
 	}
 	
 	public List<String> tokens() {
-		return ImmutableList.copyOf(tokens);
+		return Lists.newArrayList(tokens);
 	}
 	
 	public String firstToken() {

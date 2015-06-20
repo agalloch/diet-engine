@@ -15,7 +15,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 
 public class TestTokenizer {
-	
+
+    @Test
+    public void doesNotReturnEmptyTokens() {
+        final String test = "thisShouldBeOneToken/";
+
+        final List<String> tokens = Tokenizer.delimiter("/").tokenize(test).tokens();
+
+        assertTrue(tokens.size() == 1);
+    }
+
 	@Test
 	public void tokenize() {
 		final String test = "why did the chicken cross the road ?";

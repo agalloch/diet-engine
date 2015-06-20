@@ -1,7 +1,7 @@
-package org.codarama.diet.api.minimization;
+package org.codarama.diet.minimization;
 
 import com.google.common.collect.ImmutableSet;
-import org.codarama.diet.api.minimization.impl.BcelMinimizationStrategy;
+import org.codarama.diet.minimization.impl.BcelMinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy;

@@ -1,7 +1,7 @@
-package org.codarama.diet.api.minimization.impl;
+package org.codarama.diet.minimization.impl;
 
 import com.google.common.collect.Sets;
-import org.codarama.diet.api.minimization.MinimizationStrategy;
+import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
@@ -22,7 +22,7 @@ import java.util.jar.JarFile;
 import static org.codarama.diet.util.system.jdk.JdkSettings.JAVA_ROOT_PACKAGE;
 
 /**
- * A {@link org.codarama.diet.api.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
+ * A {@link org.codarama.diet.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
  *
  * Created by ayld on 6/6/2015.
  */

@@ -34,7 +34,7 @@
 			</property>
 		</bean>
 
-        <bean id="bcelMinimizationStrategy" class="org.codarama.diet.api.minimization.impl.BcelMinimizationStrategy">
+        <bean id="bcelMinimizationStrategy" class="org.codarama.diet.minimization.impl.BcelMinimizationStrategy">
             <property name="dependencyMatcherStrategy" ref="unanimousMatcher"/>
             <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
             <property name="classDependencyResolver" ref="classDependencyResolver"/>

@@ -1,4 +1,4 @@
-package org.codarama.diet.api.minimization;
+package org.codarama.diet.minimization;
 
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.Resolvable;
