@@ -49,6 +49,7 @@ public class TestModeShapeLibraryIndex {
 
         // just some basic checks for now
         Assert.assertFalse(Strings.isNullOrEmpty(indexAsString));
+        Assert.assertFalse("empty".equals(indexAsString));
         Assert.assertTrue(indexAsString.length() > 0);
     }
 
