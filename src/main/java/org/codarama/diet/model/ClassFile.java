@@ -1,16 +1,15 @@
 package org.codarama.diet.model;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import org.codarama.diet.dependency.resolver.DependencyResolver;
-import org.codarama.diet.util.Components;
 import org.apache.bcel.classfile.ClassParser;
+import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.model.marker.Packagable;
+import org.codarama.diet.model.marker.Resolvable;
+import org.codarama.diet.util.Components;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Set;
 
@@ -23,17 +22,9 @@ import java.util.Set;
  * More info here:
  *   http://en.wikipedia.org/wiki/Java_class_file
  * */
-public class ClassFile implements Resolvable{ // XXX magic numbers
+public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	
 	public static final String EXTENSION = "class";
-	
-	// bytes in a set :D
-	private static final Set<Byte> CAFEBABE = ImmutableSet.of(
-			(byte) 0xCA,
-			(byte) 0xFE,
-			(byte) 0xBA,
-			(byte) 0xBE
-	);
 	
 	private Set<ClassName> dependencies;
 	
@@ -42,14 +33,10 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 
 	private ClassFile(File classfile) { // XXX copy code
 		try {
-			if (!isClassfile(classfile)) {
-				throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file");
-			}
 			this.classFile = classfile;
-			
 			this.qualifiedName = new ClassName(new ClassParser(classFile.getAbsolutePath()).parse().getClassName());
 			
-		} catch (URISyntaxException | IOException e) {
+		} catch (IOException e) {
 			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
 		}
 	}
@@ -104,50 +91,7 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 		return new ClassFile(classFile);
 	}
 	
-	/** 
-	 * Checks whether a file is a class file.
-	 * 
-	 * @param classfile a file on the file system
-	 * 
-	 * @return true if the given file is a Java class file,
-	 *         false if not
-	 * */
-	public static boolean isClassfile(File classfile) throws URISyntaxException, IOException { // moar checks can be done ... not that they would matter ...
-		if (!classfile.exists()) {
-			return false;
-		}
-		
-		if (!EXTENSION.equals(com.google.common.io.Files.getFileExtension(classfile.getName()))) {
-			return false;
-		}
-		
-		InputStream classfileInputStream = null;
-		final byte[] firstFour = new byte[4];
-		
-		try {
-			classfileInputStream = new FileInputStream(classfile);
-			
-			if (classfileInputStream.read(firstFour, 0, firstFour.length) != firstFour.length) {
-				return false;
-			}
-			
-		} finally {
-			if (classfileInputStream != null) {
-				classfileInputStream.close();
-			}
-		}
-
-		// XXX manual set array wrap because:
-		// ImmutableSet.of(firstFour) gives me ImmutableSet<byte[]> while I want ImmutableSet<Byte> ?!?!
-		final Set<Byte> firstFourSet = Sets.newHashSet();
-		for (byte b : firstFour) {
-			firstFourSet.add(b);
-		}
-
-        return CAFEBABE.equals(ImmutableSet.copyOf(firstFourSet));
-    }
-
-	/** 
+	/**
 	 * Returns the dependencies of this {@link ClassFile}
 	 * */
 	public Set<ClassName> dependencies() {
@@ -173,6 +117,16 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 		return new File(classFile.getAbsolutePath());
 	}
 
+    public ClassStream stream() {
+        final BufferedInputStream fileInputStream;
+        try {
+            fileInputStream = new BufferedInputStream(new FileInputStream(classFile));
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("could not find file: " + classFile.getAbsolutePath());
+        }
+        return ClassStream.fromStream(fileInputStream);
+    }
+
 	/** 
 	 * Returns the path to the wrapped {@link File}.
 	 * */
@@ -181,8 +135,6 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 		return classFile.getAbsolutePath();
 	}
 
-	// TODO hashCode() and equals() must be improved reflecting new fields
-	
 	@Override
 	public int hashCode() {
 		return classFile.hashCode();
@@ -202,4 +154,8 @@ public class ClassFile implements Resolvable{ // XXX magic numbers
 		
 		return other.physicalFile().equals(this.physicalFile());
 	}
+
+    public static boolean isClassfile(File child) {
+        return Files.getFileExtension(child.getName()).equals(EXTENSION);
+    }
 }

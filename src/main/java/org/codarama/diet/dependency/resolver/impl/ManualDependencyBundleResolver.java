@@ -33,7 +33,7 @@ public class ManualDependencyBundleResolver implements DependencyBundleResolver{
 			
 			final File extractedJarDir = new File(explodedJar.getExtractedPath());
 			
-			if (containsDependency(extractedJarDir, className.toString(), new HashSet<Boolean>())) {
+			if (containsDependency(extractedJarDir, className.toString(), new HashSet<>())) {
 				result.add(explodedJar.getArchive());
 			}
 		}
@@ -51,15 +51,11 @@ public class ManualDependencyBundleResolver implements DependencyBundleResolver{
             	results.add(containsDependency(child, dependencyClassName, results));
             }
             else {
-            	try {
-					if (ClassFile.isClassfile(child)) {
-						if (dependencyMatcher.matches(new ClassName(dependencyClassName), ClassFile.fromFilepath(child.getAbsolutePath()))) {
-							return true;
-						}
-					}
-				} catch (URISyntaxException e) {
-					throw new IOException(e);
-				}
+                if (ClassFile.isClassfile(child)) {
+                    if (dependencyMatcher.matches(new ClassName(dependencyClassName), ClassFile.fromFilepath(child.getAbsolutePath()))) {
+                        return true;
+                    }
+                }
             }
         }
         return results.contains(Boolean.TRUE);

@@ -1,4 +1,4 @@
-package org.codarama.diet.model;
+package org.codarama.diet.model.marker;
 
 /**
  * Tag interface.

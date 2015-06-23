@@ -2,6 +2,7 @@ package org.codarama.diet.model;
 
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
 
 import org.junit.Test;
@@ -14,8 +15,9 @@ public class TestClassFile {
 
 	@Test
 	public void valid() {
-		ClassFile.fromClasspath("test-classes/ClassName.class");
-	}
+        final ClassFile classFile = ClassFile.fromClasspath("test-classes/ClassName.class");
+        Assert.assertNotNull(classFile);
+    }
 	
 	@Test
 	public void dependencies() {
@@ -23,8 +25,8 @@ public class TestClassFile {
 		
 		Assert.assertTrue(dependencies != null);
 
-        final int expectedCount = 8;
-        boolean isDepCountExpected = dependencies.size() == expectedCount;
+        final int expectedCount = 2;
+        final boolean isDepCountExpected = dependencies.size() == expectedCount;
 
         if (!isDepCountExpected) {
             LOG.info("Dumping out dependencies:");
@@ -34,7 +36,13 @@ public class TestClassFile {
             }
         }
         Assert.assertTrue("expected " + expectedCount + "  but found " + dependencies.size() + " dependencies", isDepCountExpected);
-		
+
+        final Set<ClassName> expectedFoundDependencies = ImmutableSet.of(
+                new ClassName("org.codarama.diet.util.Tokenizer"),
+                new ClassName("com.google.common.collect.ImmutableSet")
+        );
+        Assert.assertEquals(expectedFoundDependencies, dependencies);
+
 		// I should not be able to change the state
 		try {
 			dependencies.add(new ClassName("a.name.that.should.Fail"));

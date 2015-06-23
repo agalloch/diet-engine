@@ -14,7 +14,11 @@
 		<bean id="parentResolver" class="org.codarama.diet.component.ListenableComponent" abstract="true">
 			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
-		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentResolver"/>
+
+        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="parentResolver">
+            <property name="classStreamResolver" ref="classStreamResolver"/>
+        </bean>
 		
 </beans>

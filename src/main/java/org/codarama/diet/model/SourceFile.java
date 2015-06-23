@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.Set;
 
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.Tokenizer;
 

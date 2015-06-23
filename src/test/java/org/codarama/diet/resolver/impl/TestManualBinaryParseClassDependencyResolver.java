@@ -31,7 +31,10 @@ public class TestManualBinaryParseClassDependencyResolver {
         // should not return resolved class as a dependency
         Assert.assertFalse(resolved.contains(new ClassName("org.primefaces.model.TreeTableModel")));
 
-        Assert.assertTrue(resolved.size() == 9);
+        final int expectedCount = 1;
+        Assert.assertEquals(expectedCount, resolved.size());
 
+        final ClassName expected = new ClassName("org.primefaces.model.TreeNode");
+        Assert.assertEquals(expected, resolved.iterator().next());
 	}
 }

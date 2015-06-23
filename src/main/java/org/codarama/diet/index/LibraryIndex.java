@@ -1,7 +1,9 @@
 package org.codarama.diet.index;
 
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.model.ClassStream;
 
+import java.io.InputStream;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -52,4 +54,23 @@ public interface LibraryIndex {
      * @return true if found, false if not
      * */
     boolean contains(ClassName className);
+
+    /**
+     * Returns the class corresponding to the given {@link org.codarama.diet.model.ClassName} as a stream of bytes.
+     * If a file with this name is not found this method throws an exception.
+     *
+     * @throws java.lang.IllegalStateException if no file with given name is indexed yet
+     * @param name the name of the file to look for
+     * @return the required file as a stream of bites
+     * */
+    ClassStream get(ClassName name);
+
+    /**
+     * Searches for a class file based on given name and returns it as a stream of bytes.
+     * If a file with this name is not found this method returns null.
+     *
+     * @param name the name of the file to look for
+     * @return the required file as a stream of bites
+     * */
+    ClassStream find(ClassName name);
 }

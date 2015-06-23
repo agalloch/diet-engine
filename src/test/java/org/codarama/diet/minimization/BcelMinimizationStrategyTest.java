@@ -1,12 +1,12 @@
 package org.codarama.diet.minimization;
 
 import com.google.common.collect.ImmutableSet;
+import org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver;
 import org.codarama.diet.minimization.impl.BcelMinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
-import org.codarama.diet.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver;
 import org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ExplodedJar;
@@ -78,7 +78,7 @@ public class BcelMinimizationStrategyTest {
     }
 
     private DependencyResolver<ClassFile> newMockBcelResolver() throws IOException {
-        final DependencyResolver<ClassFile> result = mock(ManualBinaryParseClassDependencyResolver.class);
+        final DependencyResolver<ClassFile> result = mock(ClassFileDependencyResolver.class);
         when(result.resolve(any(Set.class))).thenReturn(MOCK_RESOLVER_RESULT);
         when(result.resolve(any(ClassFile.class))).thenReturn(MOCK_RESOLVER_RESULT);
 

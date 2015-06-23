@@ -12,8 +12,10 @@
 		<import resource="classpath:META-INF/common.xml" />
 		
 		<bean id="eventBus" class="com.google.common.eventbus.EventBus"/>
-		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualClassDependencyResolver">
+
+        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentClassFileDependencyResolver">
 			<property name="eventBus">
 				<bean class="com.google.common.eventbus.EventBus"/>
 			</property>
@@ -22,5 +24,6 @@
 					<constructor-arg value="50" type="int"/>
 				</bean>
 			</property>
-		</bean>
+            <property name="classStreamResolver" ref="classStreamResolver"/>
+        </bean>
 </beans>

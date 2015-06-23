@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import org.codarama.diet.model.ClassName;
-import org.codarama.diet.model.Resolvable;
+import org.codarama.diet.model.marker.Resolvable;
 
 /**
  * Resolves a {@link Resolvable}'s dependencies.

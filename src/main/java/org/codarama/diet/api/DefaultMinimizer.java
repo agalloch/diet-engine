@@ -36,7 +36,7 @@ public class DefaultMinimizer implements Minimizer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMinimizer.class);
 
-    private final MinimizationStrategy<SourceFile, File> minimizationStrategy = Components.BCEL_MINIMIZATION_STRATEGY.getInstance();
+    private final MinimizationStrategy<SourceFile, File, ClassFile> minimizationStrategy = Components.BCEL_MINIMIZATION_STRATEGY.getInstance();
 
 	protected final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
 

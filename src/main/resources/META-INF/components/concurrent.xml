@@ -25,13 +25,16 @@
 			</property>
 		</bean>
 		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualClassDependencyResolver" parent="listenableComponent">
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentClassFileDependencyResolver" parent="listenableComponent">
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
 					<constructor-arg value="${cuncurrent.class.resolver.thread.pool.size}" type="int"/>
 				</bean>
 			</property>
-		</bean>
+            <property name="classStreamResolver">
+                <bean class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+            </property>
+        </bean>
 		
 		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver" parent="listenableComponent">
 			<property name="threadPool">

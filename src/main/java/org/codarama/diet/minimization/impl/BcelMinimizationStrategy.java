@@ -26,7 +26,7 @@ import static org.codarama.diet.util.system.jdk.JdkSettings.JAVA_ROOT_PACKAGE;
  *
  * Created by ayld on 6/6/2015.
  */
-public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile, File> {
+public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile, File, ClassFile> {
     private static final Logger LOG = LoggerFactory.getLogger(BcelMinimizationStrategy.class);
 
     private DependencyMatcherStrategy dependencyMatcherStrategy;

@@ -19,7 +19,8 @@ public class DependenciesTest {
 
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());
-		Assert.assertTrue(dependencies.size() == 9);
+		Assert.assertEquals(1, dependencies.size());
+		Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), dependencies.iterator().next());
 	}
 	
 	@Test

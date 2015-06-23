@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Required;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public class ConcurrentManualClassDependencyResolver extends ManualBinaryParseClassDependencyResolver implements DependencyResolver<ClassFile>{
+public class ConcurrentClassFileDependencyResolver extends ClassFileDependencyResolver implements DependencyResolver<ClassFile>{
 
 	private ExecutorService threadPool;
 	

@@ -11,8 +11,24 @@
 
     <import resource="classpath:META-INF/common.xml" />
 
+    <bean id="indexWorkDir" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="#{workDir.concat('/index')}" type="java.lang.Object"/>
+    </bean>
+
     <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
         <constructor-arg type="java.lang.String" value="testIndexConf.json"/>
+    </bean>
+
+    <bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+
+    <bean id="parentResolver" class="org.codarama.diet.component.ListenableComponent" abstract="true">
+        <property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+    </bean>
+
+    <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
+    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="parentResolver">
+        <property name="classStreamResolver" ref="classStreamResolver"/>
     </bean>
 
 </beans>

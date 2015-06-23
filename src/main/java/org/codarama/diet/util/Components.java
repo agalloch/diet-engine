@@ -7,6 +7,7 @@ public enum Components {
 	LIB_JAR_EXPLODER("jarExploder"),
 	EXPLICIT_JAR_EXPLODER("explicitJarExploder"),
 	CLASS_DEPENDENCY_RESOLVER("classDependencyResolver"),
+	STREAM_DEPENDENCY_RESOLVER("classStreamResolver"),
 	SOURCE_DEPENDENCY_RESOLVER("sourceDependencyResolver"),
 	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher"),
     BCEL_MINIMIZATION_STRATEGY("bcelMinimizationStrategy"),

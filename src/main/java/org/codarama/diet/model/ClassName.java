@@ -1,6 +1,7 @@
 package org.codarama.diet.model;
 
 import com.google.common.collect.ImmutableSet;
+import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Tokenizer;
 
 import java.util.Set;
@@ -34,7 +35,9 @@ public final class ClassName implements Resolvable {
 	private final static Set<String> EXCEPTIONAL_CLASS_NAMES = ImmutableSet.of(
 			"package-info"
 	);
-	
+
+    public static final String INNER_CLASS_SEPARATOR = "$";
+
 	private final String qualifiedClassName;
 
 	/** 

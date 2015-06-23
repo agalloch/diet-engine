@@ -27,6 +27,7 @@ public class TestConcurrentClassDependencyResolver {
 		
 		Assert.assertTrue(resolved != null);
 		Assert.assertTrue(!resolved.isEmpty());
-		Assert.assertTrue(resolved.size() == 9);
+		Assert.assertEquals(1, resolved.size());
+		Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), resolved.iterator().next());
 	}
 }

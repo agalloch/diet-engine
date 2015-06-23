@@ -2,12 +2,11 @@ package org.codarama.diet.index.impl;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.BoundType;
-import com.google.common.collect.Range;
 import com.google.common.io.Resources;
 import org.codarama.diet.index.LibraryIndex;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.util.Tokenizer;
 import org.infinispan.schematic.document.ParsingException;
 import org.modeshape.common.collection.Problems;
@@ -19,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -40,8 +41,12 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
     private static final String JCR_QUERY_LANGUAGE = "xpath";
     private static final String JCR_SYSTEM_NODE_ID = "/jcr:system";
     private static final String JCR_ROOT_NODE_ID = "/jcr:root";
+    private static final String JCR_BINARY_NODE_PROPERTY = "binary";
 
     private static final String XPATH_QUERY_SEPARATOR = "/";
+    private static final String XPATH_DOLLAR_SIGN_REPLACEMENT = "___";
+
+    private static final String INNER_CLASS_SEPARATOR_REGEX = "\\" + ClassName.INNER_CLASS_SEPARATOR;
 
     private final Session repoSession;
 
@@ -84,12 +89,11 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
 
                 final List<String> packagesAndClassname = Tokenizer.delimiter("/").tokenize(entryName).tokens();
                 try {
-                    addChildrenDepthFirst(packagesAndClassname, rootNode);
-                } catch (RepositoryException e) {
+                    addChildrenDepthFirst(packagesAndClassname, rootNode, entry, jar);
+                } catch (RepositoryException | IOException e) {
                     throw new IllegalStateException("could not add nodes: " + packagesAndClassname + ", to parent: " + rootNode);
                 }
             }
-
         }
 
         try {
@@ -101,14 +105,19 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
         return this;
     }
 
-    private void addChildrenDepthFirst(Collection<String> newChildren, Node to) throws RepositoryException {
+    private void addChildrenDepthFirst(Collection<String> newChildren, Node to, JarEntry entry, JarFile jar) throws RepositoryException, IOException {
         if (newChildren.isEmpty()) {
             return;
         }
         final Iterator<String> childrenIterator = newChildren.iterator();
         if (childrenIterator.hasNext()) {
 
-            final String childName = childrenIterator.next();
+            String childName = childrenIterator.next();
+
+            final boolean childContainsInnerClass = childName.contains(ClassName.INNER_CLASS_SEPARATOR);
+            if (childContainsInnerClass) {
+                childName = childName.replaceAll(INNER_CLASS_SEPARATOR_REGEX, XPATH_DOLLAR_SIGN_REPLACEMENT);
+            }
 
             Node child;
             if (!to.hasNode(childName)) {
@@ -117,9 +126,19 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
             else {
                 child = to.getNode(childName);
             }
+
+            final boolean childIsClassFile = childName.endsWith(ClassFile.EXTENSION);
+            if (childIsClassFile) {
+                child.setProperty(JCR_BINARY_NODE_PROPERTY, toBinary(jar.getInputStream(entry)));
+            }
+
             childrenIterator.remove();
-            addChildrenDepthFirst(newChildren, child);
+            addChildrenDepthFirst(newChildren, child, entry, jar);
         }
+    }
+
+    private Binary toBinary(InputStream stream) throws RepositoryException {
+        return repoSession.getValueFactory().createBinary(stream);
     }
 
     @Override
@@ -130,14 +149,28 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
 
     @Override
     public boolean contains(ClassName className) {
+        return find(className) != null;
+    }
 
+    @Override
+    public ClassStream get(ClassName name) {
+        final ClassStream result = find(name);
+        if (result == null) {
+            throw new IllegalStateException("no file with name: " + name + ", found in repository");
+        }
+        return result;
+    }
+
+    @Override
+    public ClassStream find(ClassName name) {
         String query = Joiner.on(XPATH_QUERY_SEPARATOR)
                 .join(
                         JCR_ROOT_NODE_ID,
-                        className.toString().replaceAll("\\.", XPATH_QUERY_SEPARATOR)
+                        name.toString()
+                                .replaceAll("\\.", XPATH_QUERY_SEPARATOR)
+                                .replaceAll(INNER_CLASS_SEPARATOR_REGEX, XPATH_DOLLAR_SIGN_REPLACEMENT)
                 );
         query += "." + ClassFile.EXTENSION; // because library jar entries end with .class
-        query = normalizeForXpath(query);
 
         final NodeIterator nodeIterator;
         try {
@@ -145,27 +178,26 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
         } catch (RepositoryException e) {
             throw new IllegalArgumentException("could not execute query: " + query, e);
         }
-        return nodeIterator.hasNext();
-    }
+        if (!nodeIterator.hasNext()) {
+            return null;
+        }
+        if (nodeIterator.getSize() > 1) {
+            throw new IllegalArgumentException("found more than one node for name: " + name + " with query: " + query);
+        }
+        final Node node = nodeIterator.nextNode();
 
-    private String normalizeForXpath(String query) {
+        final Binary binary;
+        try {
+            binary = node.getProperty(JCR_BINARY_NODE_PROPERTY).getBinary();
+        } catch (RepositoryException e) {
+            throw new IllegalStateException("could not get binary property for file with name: " + name, e);
+        }
 
-        // we have to quote the class shot name
-        // because class name can contain $
-        // when they do the xpath quety fails as $ is a special char
-        // so we want to replace:
-        //   org/company/something/MethodRule$MethodBindingMetadata.class
-        // with:
-        //   org/company/something/*[\"MethodRule$MethodBindingMetadata.class\"]
-
-        final Tokenizer queryTokenizer = Tokenizer.delimiter(XPATH_QUERY_SEPARATOR).tokenize(query);
-        final int tokensCount = queryTokenizer.tokens().size();
-
-        final String nodeName = "*[\"" + queryTokenizer.lastToken() + "\"]";
-        final List<String> nodePath = queryTokenizer.tokensIn(Range.range(1, BoundType.CLOSED, tokensCount - 1, BoundType.CLOSED));
-
-        final String pathStr = Joiner.on(XPATH_QUERY_SEPARATOR).join(nodePath);
-        return Joiner.on(XPATH_QUERY_SEPARATOR).join(JCR_ROOT_NODE_ID, pathStr, nodeName);
+        try {
+            return ClassStream.fromStream(binary.getStream());
+        } catch (RepositoryException e) {
+            throw new IllegalStateException("could not get binary stream for node with name: " + name, e);
+        }
     }
 
     @Override
