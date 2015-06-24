@@ -23,5 +23,5 @@ public interface DependencyBundleResolver { // this name really sux ...
      * @return a set of jar files containing given class name or an empty set if class name is not
      *         contained in given jars
      * */
-	public Set<JarFile> resolve(ClassName className, Set<JarFile> bundles) throws IOException;
+	Set<JarFile> resolve(ClassName className, Set<JarFile> bundles) throws IOException;
 }

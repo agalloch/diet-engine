@@ -26,5 +26,5 @@ public interface MatchingCondition {
 	 * @return true if this condition 'thinks' that the given {@link ClassName} matches the given {@link ClassFile},
 	 *         false otherwise
 	 * */
-	public boolean satisfied(ClassName className, ClassFile classFile);
+	boolean satisfied(ClassName className, ClassFile classFile);
 }

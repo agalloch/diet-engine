@@ -6,8 +6,6 @@ import org.codarama.diet.model.marker.Packagable;
 import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.annotation.NotThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -24,8 +22,6 @@ import java.util.Set;
 @NotThreadSafe
 public class ClassStream implements Resolvable, Packagable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClassStream.class);
-
     private final InputStream streamContent;
     private final ClassName name;
 
@@ -36,22 +32,48 @@ public class ClassStream implements Resolvable, Packagable {
             this.name = new ClassName(new ClassParser(this.streamContent, "").parse().getClassName());
             this.streamContent.reset();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // assuming bcel threw IOException because validation failed
+            throw new IllegalArgumentException(e);
         }
     }
 
+    /**
+     * Creates a new class stream from an input stream.
+     * This method validates whether the give input stream actually contains a compiled class file.
+     *
+     * @throws IllegalArgumentException if the stream does not contain a compiled class
+     * @param content the stream to create a ClassStream from
+     * @return a new class stream
+     * */
     public static ClassStream fromStream(InputStream content) {
         return new ClassStream(content);
     }
 
+    /**
+     * Returns the content of this class stream.
+     * A compiled class file as a stream of bytes.
+     *
+     * @return a compiled class file as a stream of bytes.
+     * */
     public InputStream content() {
         return this.streamContent;
     }
 
+    /**
+     * Returns the fully qualified name of the class represented by this object.
+     *
+     * @see {@link ClassName}
+     * @return the fully qualified name of the class represented by this object
+     * */
     public ClassName name() {
         return this.name;
     }
 
+    /**
+     * Returns the first level dependencies (a.k.a direct dependencies) of the class represented by this object.
+     *
+     * @return a set containing only the direct dependencies of the class represented by this object
+     * */
     public Set<ClassName> dependencies() {
         try {
             return Components.STREAM_DEPENDENCY_RESOLVER.<ClassStreamDependencyResolver>getInstance().resolve(this);

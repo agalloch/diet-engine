@@ -19,5 +19,5 @@ public interface DependencyMatcherStrategy {
 	 * 
 	 * @return true if the class name given corresponds to the .class file on the file system
 	 * */
-	public boolean matches(ClassName className, ClassFile classFilepath);
+	boolean matches(ClassName className, ClassFile classFilepath);
 }

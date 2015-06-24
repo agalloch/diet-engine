@@ -37,6 +37,7 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 			this.qualifiedName = new ClassName(new ClassParser(classFile.getAbsolutePath()).parse().getClassName());
 			
 		} catch (IOException e) {
+			// assuming bcel threw IOException because validation failed
 			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
 		}
 	}
@@ -72,9 +73,11 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	}
 	
 	/** 
-	 * Creates a {@link ClassFile} from a {@link File}, checking whether the given file is actually a class file.
+	 * Creates a {@link ClassFile} from a path, checking whether the given file is actually a class file.
 	 * 
 	 * @param path path to a .class file on the file system
+	 *             preceding slash will be interpreted as an absolute path
+	 *             no preceding slash will be interpreted as a relative path
 	 * 
 	 * @return a new {@link ClassFile}
 	 * 
@@ -83,7 +86,14 @@ public class ClassFile implements Resolvable, Packagable { // XXX magic numbers
 	public static ClassFile fromFilepath(String path) {
 		return new ClassFile(new File(path));
 	}
-	
+
+	/**
+	 * Creates a {@link ClassFile} from a {@link File}, checking whether the given file is actually a class file.
+	 *
+	 * @param classFile a compiled Java class file on the file system
+	 * @return a new {@link ClassFile}
+	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
+	 * */
 	public static ClassFile fromFile(File classFile) {
 		if (classFile == null) {
 			throw new IllegalArgumentException("null argument not allowed");
