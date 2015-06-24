@@ -1,14 +1,15 @@
 package org.codarama.diet.minimization.impl;
 
 import com.google.common.collect.Sets;
-import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.util.Files;
+import org.codarama.diet.util.Java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -18,8 +19,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
-
-import static org.codarama.diet.util.system.jdk.JdkSettings.JAVA_ROOT_PACKAGE;
 
 /**
  * A {@link org.codarama.diet.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
@@ -104,11 +103,11 @@ public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile
     }
 
     private boolean isJavaApiDep(ClassFile dep) {
-        return dep.qualifiedName().toString().startsWith(JAVA_ROOT_PACKAGE);
+        return dep.qualifiedName().toString().startsWith(Java.ROOT_PACKAGE);
     }
 
     private boolean isJavaApiDep(ClassName dep) {
-        return dep.toString().startsWith(JAVA_ROOT_PACKAGE);
+        return dep.toString().startsWith(Java.ROOT_PACKAGE);
     }
 
     private void explodeJars(Set<File> libraryLocations) throws IOException {

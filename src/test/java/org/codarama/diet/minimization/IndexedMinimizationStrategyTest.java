@@ -2,7 +2,6 @@ package org.codarama.diet.minimization;
 
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
@@ -11,7 +10,6 @@ import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Tokenizer;
-import org.codarama.diet.util.system.jdk.JdkSettings;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

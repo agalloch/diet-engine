@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.bcel.classfile.*;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
-import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.model.ClassName;
-import org.codarama.diet.util.system.jdk.JdkSettings;
+import org.codarama.diet.model.ClassStream;
+import org.codarama.diet.util.Java;
 
 import java.io.IOException;
 import java.util.Set;
@@ -89,7 +89,7 @@ public class ClassStreamDependencyResolver implements DependencyResolver<ClassSt
             final boolean isNotResolvedClass = !dependency.equals(javaClass.getClassName());
 
             // don't return java.io, java.lang ect. dependencies
-            final boolean isNotJavaCoreDependency = !dependency.startsWith(JdkSettings.JAVA_ROOT_PACKAGE);
+            final boolean isNotJavaCoreDependency = !dependency.startsWith(Java.ROOT_PACKAGE);
             if (isNotResolvedClass && isNotJavaCoreDependency) {
                 foundDependencies.add(new ClassName(dependency));
             }
