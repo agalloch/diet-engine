@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.model.ClassFile;
-import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.test.util.suite.IntegrationTest;
@@ -50,9 +49,6 @@ public class IndexedVsManualMinimizationStrategyTest implements IntegrationTest{
     @Autowired
     private MinimizationStrategy<SourceFile, File, ClassFile> bcelMinimizationStrategy;
 
-    private String pathToSources;
-
-    private Set<File> sources;
     private Set<SourceFile> sourceFiles;
 
     private Set<File> libraries;
@@ -61,10 +57,10 @@ public class IndexedVsManualMinimizationStrategyTest implements IntegrationTest{
     @Before
     public void init() throws IOException {
         final String pathToLibraries = toPath(Resources.getResource("test-classes/test-lib-dir"));
+        final String pathToSources = toPath(Resources.getResource("test-classes/test-src-dir"));
 
-        this.pathToSources = toPath(Resources.getResource("test-classes/test-src-dir"));
+        final Set<File> sources = Files.in(pathToSources).withExtension(SourceFile.EXTENSION).all();
 
-        this.sources = Files.in(pathToSources).withExtension(SourceFile.EXTENSION).all();
         this.sourceFiles = Sets.newHashSetWithExpectedSize(sources.size());
         this.sourceFiles.addAll(
                 sources.stream()

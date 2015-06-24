@@ -36,7 +36,7 @@ public class TestManualParseSourceDependencyResolver {
 
 		// get dependencies in a way different than the resolver
 		final String content = Resources.toString(validSourceUrl, Charsets.UTF_8);
-		final String[] lines = content.split("\\\n");
+		final String[] lines = content.split("\n");
 
 		final Set<String> dependencies = new HashSet<>();
 		for (String line : lines) {

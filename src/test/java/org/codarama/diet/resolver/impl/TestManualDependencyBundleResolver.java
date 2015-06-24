@@ -65,7 +65,11 @@ public class TestManualDependencyBundleResolver {
 	
 	private static void delete(File file) throws IOException {
 		if (file.isDirectory()) {
-			for (File sub : file.listFiles()) {
+			final File[] files = file.listFiles();
+			if (files == null) {
+				return;
+			}
+			for (File sub : files) {
 				delete(sub);
 			}
 		}

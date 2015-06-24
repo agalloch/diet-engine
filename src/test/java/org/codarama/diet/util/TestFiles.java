@@ -1,20 +1,10 @@
 package org.codarama.diet.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.google.common.io.CharStreams;
-import com.google.common.io.OutputSupplier;
+import com.google.common.io.Resources;
 import org.junit.Assert;
-
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testFilesContext.xml"})
@@ -180,7 +172,7 @@ public class TestFiles {
         assertThatFoundAreFiles(Sets.newHashSet(singleFound));
 
         try {
-            final File erroneousQuery = Files.in(filesWorkDir).named("guava-14.0.1").single();
+            Files.in(filesWorkDir).named("guava-14.0.1").single();
         } catch (IllegalStateException e) {
             // win
             return;
@@ -230,7 +222,11 @@ public class TestFiles {
 			return;
 		}
 		if (file.isDirectory()) {
-			for (File sub : file.listFiles()) {
+			final File[] files = file.listFiles();
+			if (files == null) {
+				return;
+			}
+			for (File sub : files) {
 				delete(sub);
 			}
 		}

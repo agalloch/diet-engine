@@ -1,8 +1,3 @@
-/* ***************************************************************************
- * Copyright 2014 VMware, Inc. All rights reserved. -- VMware Confidential
- * **************************************************************************
- */
-
 package org.codarama.diet.minimization;
 
 import com.google.common.collect.Sets;
@@ -27,16 +22,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link org.codarama.diet.minimization.impl.IndexedMinimizationStrategy}.

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
+ * Tests {@link Directories}.
+ *
  * Created by codarama on 1/10/14.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
