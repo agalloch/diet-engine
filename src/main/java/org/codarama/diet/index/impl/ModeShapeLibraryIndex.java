@@ -201,6 +201,17 @@ public class ModeShapeLibraryIndex implements LibraryIndex{
     }
 
     @Override
+    public long size() {
+        final NodeIterator allClassNodes;
+        try {
+            allClassNodes = queryForNodes("//element(*, nt:base)[jcr:contains(., '" + ClassFile.EXTENSION + "')]");
+        } catch (RepositoryException e) {
+            throw new IllegalStateException(e);
+        }
+        return allClassNodes.getSize();
+    }
+
+    @Override
     public String toString() {
 
         final StringBuffer result = new StringBuffer();

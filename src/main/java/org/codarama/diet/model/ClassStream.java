@@ -83,6 +83,11 @@ public class ClassStream implements Resolvable, Packagable {
     }
 
     @Override
+    public String toString() {
+        return name.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null) {
             return false;

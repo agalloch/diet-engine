@@ -28,7 +28,10 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 /**
- * Tests {@link org.codarama.diet.minimization.impl.IndexedMinimizationStrategy}
+ * Tests
+ * {@link org.codarama.diet.minimization.impl.IndexedMinimizationStrategy}
+ * and
+ * {@link org.codarama.diet.minimization.impl.BcelMinimizationStrategy}.
  *
  * Also, BATTLE OF THA RESOLVERS!
  * PREPARE MORTAL! INCOMING MICRO BENCHMARKS!
@@ -36,10 +39,10 @@ import java.util.stream.Collectors;
  * Created by ayld on 6/21/2015.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:META-INF/test-contexts/testIndexedMinimizationStrategy.xml"})
-public class IndexedMinimizationStrategyTest implements IntegrationTest{
+@ContextConfiguration({"classpath:META-INF/test-contexts/testIndexedVsManualMinimizationStrategy.xml"})
+public class IndexedVsManualMinimizationStrategyTest implements IntegrationTest{
 
-    private static final Logger LOG = LoggerFactory.getLogger(IndexedMinimizationStrategyTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IndexedVsManualMinimizationStrategyTest.class);
 
     @Autowired
     private MinimizationStrategy<SourceFile, JarFile, ClassStream> indexedStrategy;
@@ -47,12 +50,7 @@ public class IndexedMinimizationStrategyTest implements IntegrationTest{
     @Autowired
     private MinimizationStrategy<SourceFile, File, ClassFile> bcelMinimizationStrategy;
 
-    private ClassName classNameToResolve;
-    private JarFile guavaJar;
-    private JarFile jar2Jar;
-
     private String pathToSources;
-    private String pathToLibraries;
 
     private Set<File> sources;
     private Set<SourceFile> sourceFiles;
@@ -64,17 +62,7 @@ public class IndexedMinimizationStrategyTest implements IntegrationTest{
     public void init() throws IOException {
         final String pathToLibraries = toPath(Resources.getResource("test-classes/test-lib-dir"));
 
-        this.guavaJar = new JarFile(
-                Files.in(pathToLibraries).nonRecursive().named("guava-14.0.1").single()
-        );
-        this.jar2Jar = new JarFile(
-                Files.in(pathToLibraries).nonRecursive().named("jar2").single()
-        );
-
-        this.classNameToResolve =  new ClassName("com.google.common.collect.Sets");
-
         this.pathToSources = toPath(Resources.getResource("test-classes/test-src-dir"));
-        this.pathToLibraries = toPath(Resources.getResource("test-classes/test-lib-dir"));
 
         this.sources = Files.in(pathToSources).withExtension(SourceFile.EXTENSION).all();
         this.sourceFiles = Sets.newHashSetWithExpectedSize(sources.size());
@@ -92,7 +80,7 @@ public class IndexedMinimizationStrategyTest implements IntegrationTest{
 
     // LET'S GET READY TO RUMBLE
     @Test
-    public void indexedVsBcelStrategy() throws IOException {
+    public void battle() throws IOException {
         // Ready !
         long startTime = System.currentTimeMillis(); // Set !
         final Set<ClassStream> indexMinimized = indexedStrategy.minimize(sourceFiles, jarLibraries); // Go !

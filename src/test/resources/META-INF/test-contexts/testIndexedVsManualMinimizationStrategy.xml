@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:META-INF/common.xml"/>
+
+    <bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+
+    <bean id="parentResolver" class="org.codarama.diet.component.ListenableComponent" abstract="true">
+        <property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+    </bean>
+
+    <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+
+    <bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentResolver"/>
+
+    <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
+        <constructor-arg type="java.lang.String" value="testIndexConf.json"/>
+    </bean>
+
+    <bean id="indexedStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy">
+        <property name="index" ref="modeShapeIndex"/>
+        <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+        <property name="classDependencyResolver" ref="classStreamResolver"/>
+    </bean>
+
+    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="parentResolver">
+        <property name="classStreamResolver" ref="classStreamResolver"/>
+    </bean>
+
+    <bean id="unanimousMatcher" class="org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+        <property name="conditions">
+            <set>
+                <bean class="org.codarama.diet.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
+                <bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+                <bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="jarExploder" class="org.codarama.diet.bundle.impl.ManualJarExploder">
+        <property name="workDir" value="#{workDir}"/>
+        <property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+    </bean>
+
+    <bean id="bcelMinimizationStrategy" class="org.codarama.diet.minimization.impl.BcelMinimizationStrategy">
+        <property name="dependencyMatcherStrategy" ref="unanimousMatcher"/>
+        <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+        <property name="classDependencyResolver" ref="classDependencyResolver"/>
+        <property name="libJarExploder" ref="jarExploder"/>
+        <property name="fileFinder">
+            <bean class="org.codarama.diet.util.Files" factory-method="in">
+                <constructor-arg type="java.lang.String" ref="workDir"/>
+            </bean>
+        </property>
+    </bean>
+
+</beans>

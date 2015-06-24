@@ -73,4 +73,11 @@ public interface LibraryIndex {
      * @return the required file as a stream of bites
      * */
     ClassStream find(ClassName name);
+
+    /**
+     * Returns the number of currently indexed classes.
+     *
+     * @return the number of currently indexed classes.
+     * */
+    long size();
 }

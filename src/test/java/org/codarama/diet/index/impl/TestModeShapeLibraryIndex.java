@@ -55,7 +55,7 @@ public class TestModeShapeLibraryIndex {
     }
 
     @Test
-    public void testIndex() throws URISyntaxException, IOException {
+    public void index() throws URISyntaxException, IOException {
 
         final String indexAsString = modeShapeIndex.toString();
 
@@ -66,7 +66,7 @@ public class TestModeShapeLibraryIndex {
     }
 
     @Test
-    public void testContains() {
+    public void contains() {
         assertTrue(modeShapeIndex.contains(new ClassName("org.primefaces.model.DefaultScheduleModel")));
         assertTrue(modeShapeIndex.contains(new ClassName("org.primefaces.model.DynamicChainedPropertyComparator")));
         assertTrue(modeShapeIndex.contains(new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata")));
@@ -77,7 +77,7 @@ public class TestModeShapeLibraryIndex {
     }
 
     @Test
-    public void testSingleJarIndex() {
+    public void singleJarIndex() {
         try {
             modeShapeIndex.index(primefacesJar);
         } catch (UnsupportedOperationException e) {
@@ -87,7 +87,7 @@ public class TestModeShapeLibraryIndex {
     }
 
     @Test
-    public void testFind() throws IOException {
+    public void find() throws IOException {
         InputStream foundFileInputStream = modeShapeIndex.find(new ClassName("org.primefaces.model.DefaultScheduleModel")).content();
         assertNotNull(foundFileInputStream);
         assertTrue(foundFileInputStream.available() > 0);
@@ -104,7 +104,7 @@ public class TestModeShapeLibraryIndex {
     }
 
     @Test
-    public void testGet() throws IOException {
+    public void get() throws IOException {
         InputStream foundFileInputStream = modeShapeIndex.get(new ClassName("org.primefaces.model.DefaultScheduleModel")).content();
         assertNotNull(foundFileInputStream);
         assertTrue(foundFileInputStream.available() > 0);
@@ -123,5 +123,12 @@ public class TestModeShapeLibraryIndex {
             return; //yay
         }
         Assert.fail(); // awww
+    }
+
+    @Test
+    public void size() {
+        final long size = modeShapeIndex.size();
+
+        assertTrue(size > 0);
     }
 }
