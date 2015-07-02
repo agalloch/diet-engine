@@ -251,7 +251,11 @@ public class Files { // XXX this is actually rather procedural ...
             return;
         }
         if (file.isDirectory()) {
-            for (File sub : file.listFiles()) {
+			final File[] files = file.listFiles();
+			if (files == null) {
+				return;
+			}
+			for (File sub : files) {
                 deleteRecursive(sub);
             }
         }

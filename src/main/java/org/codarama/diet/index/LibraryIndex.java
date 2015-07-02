@@ -27,6 +27,9 @@ import java.util.jar.JarFile;
  *            /     \      |
  *          Sets   Lists   Strings
  *
+ * The primary goal of the index is to index classes, whether an implementation decides to
+ * keep or discard directory entries is left to the implementer.
+ *
  * Created by ayld on 20.06.15.
  */
 public interface LibraryIndex {
@@ -76,6 +79,7 @@ public interface LibraryIndex {
 
     /**
      * Returns the number of currently indexed classes.
+     * Implementers should omit directory entries count, even if they index them.
      *
      * @return the number of currently indexed classes.
      * */

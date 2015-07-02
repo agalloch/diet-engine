@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.index.LibraryIndex;
 import org.codarama.diet.model.ClassName;
+import org.codarama.diet.model.ClassStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class TestModeShapeLibraryIndex {
     private LibraryIndex modeShapeIndex;
 
     @Autowired
-    private DependencyResolver classDependencyResolver;
+    private DependencyResolver<ClassStream> classStreamResolver;
 
     private JarFile primefacesJar;
 
@@ -88,34 +89,54 @@ public class TestModeShapeLibraryIndex {
 
     @Test
     public void find() throws IOException {
-        InputStream foundFileInputStream = modeShapeIndex.find(new ClassName("org.primefaces.model.DefaultScheduleModel")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+        ClassName testName = new ClassName("org.primefaces.model.DefaultScheduleModel");
+        ClassStream found = modeShapeIndex.find(testName);
 
-        foundFileInputStream = modeShapeIndex.find(new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
 
-        foundFileInputStream = modeShapeIndex.find(new ClassName("org.aspectj.bridge.MessageUtil$11")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+
+        testName = new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata");
+        found = modeShapeIndex.find(testName);
+
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
+
+        testName = new ClassName("org.aspectj.bridge.MessageUtil$11");
+        found = modeShapeIndex.find(testName);
+
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
 
         Assert.assertNull(modeShapeIndex.find(new ClassName("non.existent.clazz.Name")));
     }
 
     @Test
     public void get() throws IOException {
-        InputStream foundFileInputStream = modeShapeIndex.get(new ClassName("org.primefaces.model.DefaultScheduleModel")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+        ClassName testName = new ClassName("org.primefaces.model.DefaultScheduleModel");
+        ClassStream found = modeShapeIndex.get(testName);
 
-        foundFileInputStream = modeShapeIndex.get(new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
 
-        foundFileInputStream = modeShapeIndex.get(new ClassName("org.aspectj.bridge.MessageUtil$11")).content();
-        assertNotNull(foundFileInputStream);
-        assertTrue(foundFileInputStream.available() > 0);
+
+        testName = new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata");
+        found = modeShapeIndex.get(testName);
+
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
+
+        testName = new ClassName("org.aspectj.bridge.MessageUtil$11");
+        found = modeShapeIndex.get(testName);
+
+        assertNotNull(found);
+        assertEquals(found.name(), testName);
+        assertTrue(found.content().available() > 0);
 
         try {
             modeShapeIndex.get(new ClassName("non.existent.clazz.Name"));
