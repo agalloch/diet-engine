@@ -1,6 +1,11 @@
 package org.codarama.diet.minimization.impl;
 
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.jar.JarFile;
+
 import org.codarama.diet.bundle.JarExploder;
 import org.codarama.diet.dependency.matcher.DependencyMatcherStrategy;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
@@ -14,11 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.jar.JarFile;
+import com.google.common.collect.Sets;
 
 /**
  * A {@link org.codarama.diet.minimization.MinimizationStrategy} utilizing the Apache BCEL library.
@@ -35,7 +36,8 @@ public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile
     private JarExploder libJarExploder;
     private Files fileFinder;
 
-    public Set<ClassFile> minimize(Set<SourceFile> sources, Set<File> libs) throws IOException {
+    @Override
+	public Set<ClassFile> minimize(Set<SourceFile> sources, Set<File> libs) throws IOException {
         final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
 
         explodeJars(libs);
@@ -80,6 +82,11 @@ public class BcelMinimizationStrategy implements MinimizationStrategy<SourceFile
 
                 final File libClass = libClassesIter.next();
                 final ClassFile libClassFile = ClassFile.fromFile(libClass);
+
+				// skip invalid class files
+				if (libClassFile == null) {
+					continue;
+				}
 
                 if (dependencyMatcherStrategy.matches(dependencyName, libClassFile)) {
                     result.add(libClassFile);
