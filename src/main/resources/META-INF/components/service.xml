@@ -28,7 +28,11 @@
 		<bean id="jarMaker" class="org.codarama.diet.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>
-		
+
+		<bean id="streamJarMaker" class="org.codarama.diet.bundle.impl.StreamJarMaker">
+			<property name="zippedJarName" value="#{defaultOutJar}"/>
+		</bean>
+
 		<bean id="unanimousMatcher" class="org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 			<property name="conditions">
 				<set>

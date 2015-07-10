@@ -17,19 +17,19 @@ import com.google.common.collect.Sets;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.model.ClassFile;
 
-public class ManualJarMaker implements JarMaker{
+public class ManualJarMaker implements JarMaker<File>{
 
-	private String facadeJarName = "slim.jar";
+	private String facadeJarName = "diet.jar";
 	
 	@Override
-	public JarFile zip(Set<File> classFiles) throws IOException {
+	public JarFile zip(Set<File> files) throws IOException {
 		makeOutputDir();
 		
 		final JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(new File(facadeJarName)));
 		
 		final Set<String> dirEntries = Sets.newHashSet();
 		final Set<String> classEntries = Sets.newHashSet();
-		for (File classFile : classFiles) {
+		for (File classFile : files) {
 			
 			final ClassFile clazz = ClassFile.fromFile(classFile);
 			final String simpleName = clazz.qualifiedName().shortName();

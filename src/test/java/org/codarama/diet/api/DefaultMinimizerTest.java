@@ -23,8 +23,11 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * Tests {@link DefaultMinimizer}
+ * */
 @Category(IntegrationTest.class)
-public class MinimizerTest implements IntegrationTest{
+public class DefaultMinimizerTest implements IntegrationTest{
 
 	private static final String MINIMIZATION_RESULT_FILE_NAME = "minimizationTestExpectedResult";
 

@@ -12,6 +12,7 @@ import java.util.jar.JarFile;
 
 import org.codarama.diet.bundle.JarMaker;
 
+import org.codarama.diet.model.ClassFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class TestManualJarMaker {
 	private String workDir;
 	
 	@Autowired
-	private JarMaker jarMaker;
+	private JarMaker<File> jarMaker;
 	
 	@Test
 	public void zip() throws URISyntaxException, IOException {

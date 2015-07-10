@@ -7,9 +7,7 @@ import org.codarama.diet.model.marker.Resolvable;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.annotation.NotThreadSafe;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,6 +45,32 @@ public class ClassStream implements Resolvable, Packagable {
      * */
     public static ClassStream fromStream(InputStream content) {
         return new ClassStream(content);
+    }
+
+    /**
+     * Creates a new class stream from a file on the file system.
+     * This method validates whether the give input stream actually contains a compiled class file.
+     *
+     * @throws IllegalArgumentException if given file doesn't exist or is a directory
+     * @param file file to reate a class stream from
+     * @return a new class stream
+     * */
+    public static ClassStream fromFile(File file) {
+        if (file == null) {
+            throw new NullPointerException("argument is null");
+        }
+        if (!file.exists()) {
+            throw new IllegalArgumentException(file.getAbsolutePath() + " does not exist");
+        }
+        if (file.isDirectory()) {
+            throw new IllegalArgumentException(file.getAbsolutePath() + " is a directory, but expected file");
+        }
+        try {
+            return fromStream(new BufferedInputStream(new FileInputStream(file)));
+        } catch (FileNotFoundException e) {
+            // should not happen as we've checked whether the file exists
+            throw new IllegalArgumentException("could not find file: " + file, e);
+        }
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.jar.JarFile;
 /**
  * A interface for creating jar files.
  * */
-public interface JarMaker {
+public interface JarMaker<F> {
 	
 	String JAR_FILE_EXTENSION = "jar";
 
@@ -18,8 +18,8 @@ public interface JarMaker {
 	 * If validations fail an {@link IOException} must be thrown.
 	 *
 	 * @throws IOException if files contained in the set don't exist or are directories
-	 * @param classFiles a set of files to be jarred (zipped)
+	 * @param files a set of files to be jarred (zipped)
 	 * @return a zipped Jar file containing given files
 	 * */
-	JarFile zip(Set<File> classFiles) throws IOException;
+	JarFile zip(Set<F> files) throws IOException;
 }

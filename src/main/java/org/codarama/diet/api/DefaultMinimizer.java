@@ -38,8 +38,7 @@ public class DefaultMinimizer implements Minimizer {
 
     private final MinimizationStrategy<SourceFile, File, ClassFile> minimizationStrategy = Components.BCEL_MINIMIZATION_STRATEGY.getInstance();
 
-	protected final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
-
+	private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
 	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance();
 
 	// this is usually the OS temp dir
@@ -53,7 +52,7 @@ public class DefaultMinimizer implements Minimizer {
 
 	private Set<JarFile> forceIncludeJars = Sets.newHashSet();
 	private Set<ClassName> forceIncludeClasses = Sets.newHashSet();
-	private Set<File> libraryLocations = Sets.newHashSet();
+	protected Set<File> libraryLocations = Sets.newHashSet();
 
 	/**
 	 * <p>
