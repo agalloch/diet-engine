@@ -12,7 +12,7 @@
 	<url>http://diet.codarama.org/</url>
 
 	<properties>
-		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
+		<org.springframework.version>4.1.7.RELEASE</org.springframework.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <test.suite>**/UnitTestsSuite.class</test.suite>
 	</properties>
