@@ -6,3 +6,18 @@ before_install:
 script: "travis_wait mvn test jacoco:report coveralls:report"
 notifications:
   slack: codarama:YVl3XmRANEPWD74rdOErjXGG
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "LX9GoTLIh0znv/DW+72YeQWB9iqKuQYUz/UZ24i9ruL4zuJnMveSAJC5InBb2RyPzS2gIhyUmvqIw9R8iJ89phA1xuyuNgo04Mfj0nHfYaivt1ln9cZsRAV41MDxllSIEh27Ltrpzh7SPQgBuA6AtgHPrjwvmeE6h8jvzsID5tY="
+
+addons:
+  coverity_scan:
+    project:
+      name: "Codarama/diet-engine"
+      description: "Build submitted via Travis CI"
+    notification_email: tihomir.mateev@codarama.org
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
+    branch_pattern: coverity_scan
