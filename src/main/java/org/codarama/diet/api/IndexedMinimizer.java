@@ -14,6 +14,8 @@ import org.codarama.diet.util.Files;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -25,11 +27,22 @@ import java.util.stream.Collectors;
  */
 public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
 
-    private final MinimizationStrategy<SourceFile, File, ClassStream> minimizationStrategy = Components.INDEXED_MINIMIZATION_STRATEGY.getInstance();
+    private final MinimizationStrategy<SourceFile, JarFile, ClassStream> minimizationStrategy = Components.INDEXED_MINIMIZATION_STRATEGY.getInstance();
     private final JarMaker<ClassStream> jarMaker = Components.STREAM_JAR_MAKER.getInstance();
 
     private IndexedMinimizer(File pathToSources) {
         super(pathToSources);
+    }
+
+    public static Minimizer sources(String pathToSources) {
+        final File sourceDirectory = new File(pathToSources);
+
+        if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
+            throw new IllegalArgumentException("directory at: " + pathToSources
+                    + " does not exist or is not a directory");
+        }
+
+        return new IndexedMinimizer(sourceDirectory);
     }
 
     @Override
@@ -47,7 +60,7 @@ public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
                         .collect(Collectors.toList())
         );
 
-        final Set<ClassStream> minimized = minimizationStrategy.minimize(sources, libraryLocations);
+        final Set<ClassStream> minimized = minimizationStrategy.minimize(sources, toJarFiles(libraryLocations));
 
         final JarFile minimizedJar = jarMaker.zip(minimized);
 
@@ -55,6 +68,15 @@ public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
 
         return reportBuilder.getReport();
     }
+
+    private Set<JarFile> toJarFiles(Collection<File> jars) throws IOException{
+        final Set<JarFile> result = Sets.newHashSetWithExpectedSize(jars.size());
+        for (File jar : jars) {
+            result.add(new JarFile(jar));
+        }
+        return result;
+    }
+
 
     @Override
     public Minimizer libs(String pathToLibraries) throws IOException {

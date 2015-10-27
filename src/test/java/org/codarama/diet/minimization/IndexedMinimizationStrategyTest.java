@@ -36,9 +36,9 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testIndexedMinimizationStrategy.xml"})
-public class TestIndexedMinimizationStrategy {
+public class IndexedMinimizationStrategyTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestIndexedMinimizationStrategy.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IndexedMinimizationStrategyTest.class);
 
     private String pathToSources;
 
@@ -76,7 +76,12 @@ public class TestIndexedMinimizationStrategy {
 
     @Test
     public void minimize() throws IOException {
+
+        long startTime = System.currentTimeMillis();
         final Set<ClassStream> indexMinimized = indexedStrategy.minimize(sourceFiles, jarLibraries);
+        long endTime = System.currentTimeMillis();
+
+        LOG.info("minimization took: " + (endTime - startTime) / 1000 + " seconds");
 
         assertNotNull(indexMinimized);
         assertTrue(indexMinimized.size() > 0);

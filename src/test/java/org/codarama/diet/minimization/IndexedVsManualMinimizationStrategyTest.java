@@ -83,7 +83,7 @@ public class IndexedVsManualMinimizationStrategyTest implements IntegrationTest{
         long endTime = System.currentTimeMillis(); // We have a contender !!!
 
         long runtime = endTime - startTime;
-        LOG.info("indexed strategy finished in: " + runtime + " millis");
+        LOG.info("indexed strategy finished in: " + runtime / 1000 + " seconds");
 
         Assert.assertNotNull(indexMinimized);
         Assert.assertTrue(indexMinimized.size() > 0);
@@ -97,7 +97,7 @@ public class IndexedVsManualMinimizationStrategyTest implements IntegrationTest{
         Assert.assertTrue(bcelMinimized.size() > 0);
 
         runtime = endTime - startTime;
-        LOG.info("manual strategy finished in: " + runtime + " millis");
+        LOG.info("manual strategy finished in: " + runtime / 1000 + " seconds");
     }
 
     private String toPath(URL uri) {

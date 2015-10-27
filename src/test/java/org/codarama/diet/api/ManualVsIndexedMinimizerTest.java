@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -19,9 +18,9 @@ import java.net.URL;
  *
  * Created by Ayld on 7/10/15.
  */
-public class ManualVsIndexedMinimizedTest implements IntegrationTest{
+public class ManualVsIndexedMinimizerTest implements IntegrationTest{
 
-    private static final Logger LOG = LoggerFactory.getLogger(ManualVsIndexedMinimizedTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ManualVsIndexedMinimizerTest.class);
 
     @Test
     public void battle() throws IOException {
