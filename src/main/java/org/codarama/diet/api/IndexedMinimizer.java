@@ -50,23 +50,39 @@ public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
         // TODO itching to use aspects here, as this is a cross cutting concern, but lets keep it simple for now
         ReportBuilder reportBuilder = ReportBuilder.startClock();
 
-        final Set<SourceFile> sources = Sets.newHashSet();
-        sources.addAll(
-                Files.in(sourceDir.getAbsolutePath())
-                        .withExtension(SourceFile.EXTENSION)
-                        .list()
-                        .stream()
-                        .map(SourceFile::fromFile)
-                        .collect(Collectors.toList())
+
+        final Set<File> sourceFiles = Files
+                .in(sourceDir.getAbsolutePath())
+                .withExtension(SourceFile.EXTENSION)
+                .list();
+
+        final Set<SourceFile> sources = Sets.newHashSet(
+                sourceFiles
+                    .stream()
+                    .map(SourceFile::fromFile)
+                    .collect(Collectors.toList())
         );
 
-        final Set<ClassStream> minimized = minimizationStrategy.minimize(sources, toJarFiles(libraryLocations));
+        final Set<JarFile> libs = toJarFiles(libraryLocations);
+        reportBuilder.sources(sources).allLibsCount(countClasses(libs));
+
+        final Set<ClassStream> minimized = minimizationStrategy.minimize(sources, libs);
+
+        reportBuilder.minimizedLibs(minimized);
 
         final JarFile minimizedJar = jarMaker.zip(minimized);
 
         reportBuilder.setJarFile(minimizedJar).stopClock();
 
         return reportBuilder.getReport();
+    }
+
+    private int countClasses(Set<JarFile> jars) {
+        int result = 0;
+        for (JarFile jar : jars) {
+            result += jar.size();
+        }
+        return result;
     }
 
     private Set<JarFile> toJarFiles(Collection<File> jars) throws IOException{

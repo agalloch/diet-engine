@@ -72,13 +72,25 @@ public class ReportBuilder {
 	}
 
 	/**
+	 * Collects the required total number of classes to be minimized.
+	 *
+	 * @param count
+	 *            the total number of classes (usually jar entries)
+	 * @return the instance of the {@link ReportBuilder} for chaining purposes
+	 */
+	public ReportBuilder allLibsCount(int count) {
+		this.report.statistics.totalDependenciesCount = count;
+		return this;
+	}
+
+	/**
 	 * Collects the required statistics from the dependencies after they were minimized
 	 * 
 	 * @param foundDependencies
 	 *            a {@link Set} of {@link ClassFile}s that include the dependencies after they were minimized
 	 * @return the instance of the {@link ReportBuilder} for chaining purposes
 	 */
-	public ReportBuilder minimizedLibs(Set<ClassFile> foundDependencies) {
+	public ReportBuilder minimizedLibs(Set<?> foundDependencies) {
 		this.report.statistics.minimizedDependenciesCount = foundDependencies.size();
 		return this;
 	}
