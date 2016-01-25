@@ -1,10 +1,10 @@
-Status:
+__Status__:
 [![Build Status](https://travis-ci.org/Codarama/diet-engine.svg?branch=master)](https://travis-ci.org/Codarama/diet-engine)
 [![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
 [![Static Code Analysis Status](https://scan.coverity.com/projects/6324/badge.svg)](https://scan.coverity.com/projects/codarama-diet-engine)
 [![Dependency Status](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7/badge.svg?style=flat)](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7)
 
-Talk with us:
+__Chat with us__:
 [![Chat at https://gitter.im/Codarama/diet-engine](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Codarama/diet-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Diet
@@ -15,7 +15,7 @@ The result jar should contain only classes the project actually uses, nothing el
 
 This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/Codarama/diet-maven-mojo), an eclpse plugin and perhaps a web project.
 
-It's main target group is currently android development as space conservation is completely uneeded for web development, but it can be used for that also.
+It's main target group is currently android development as space conservation is mostly uneeded for web development.
 
 ## Features
 
