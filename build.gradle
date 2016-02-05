@@ -1,7 +1,9 @@
 apply plugin: 'java'
-sourceCompatibility = 1.7
+
+sourceCompatibility = 1.8
 version = '0.6.0-SNAPSHOT'
 def title = 'Diet Engine'
+
 jar {
     manifest {
         attributes 'Implementation-Title': title,
@@ -13,11 +15,20 @@ repositories {
     mavenCentral()
 }
 
-def springVersion = '3.2.5.RELEASE'
-def slf4jVersion = '1.7.5'
+def springVersion = '4.1.7.RELEASE'
+def modeshapeVersion = '4.3.0.Final'
+def slf4jVersion = '1.7.12'
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '14.0.1'
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
     compile group: 'org.apache.bcel', name: 'bcel', version: '5.2'
+
+    compile group: 'org.modeshape', name: 'modeshape-jcr', version: modeshapeVersion
+    compile group: 'org.modeshape.bom', name: 'modeshape-bom-embedded', version: modeshapeVersion
+
+    compile group: 'org.infinispan', name: 'infinispan-cachestore-jdbc', version: '8.1.1.Final'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.187'
+    compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.1.0'
+
     compile group: 'org.springframework', name: 'spring-core', version: springVersion
     compile group: 'org.springframework', name: 'spring-expression', version: springVersion
     compile group: 'org.springframework', name: 'spring-beans', version: springVersion
@@ -26,9 +37,26 @@ dependencies {
     compile group: 'org.springframework', name: 'spring-context-support', version: springVersion
     compile group: 'org.springframework', name: 'spring-test', version: springVersion
     compile group: 'org.springframework', name: 'spring-tx', version: springVersion
+
     compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: slf4jVersion
-    testCompile group: 'junit', name: 'junit', version: '4.8.2'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+    testCompile group: 'io.takari.junit', name: 'takari-cpsuite', version: '1.2.7'
+}
+
+test {
+    maxParallelForks = Runtime.runtime.availableProcessors()
+    forkEvery = 8
+
+    // TODO: a more sophisticated method to exclude these fellas
+    exclude 'org/codarama/diet/test/util/suite/IntegrationTestsSuite.class'
+    exclude 'org/codarama/diet/api/DefaultMinimizerTest.class'
+    exclude 'org/codarama/diet/api/IndexedMinimizerTest.class'
+    exclude 'org/codarama/diet/api/ManualVsIndexedMinimizerTest.class'
+    exclude 'org/codarama/diet/api/RegistrarTest.class'
+    exclude 'org/codarama/diet/minimization/IndexedVsManualMinimizationStrategyTest.class'
 }
 
 //create a single Jar with all dependencies
