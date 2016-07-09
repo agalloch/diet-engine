@@ -49,12 +49,9 @@ dependencies {
 test {
 
     // TODO: a more sophisticated method to exclude these fellas
-    exclude 'org/codarama/diet/test/util/suite/IntegrationTestsSuite.class'
-    exclude 'org/codarama/diet/api/DefaultMinimizerTest.class'
-    exclude 'org/codarama/diet/api/IndexedMinimizerTest.class'
-    exclude 'org/codarama/diet/api/ManualVsIndexedMinimizerTest.class'
-    exclude 'org/codarama/diet/api/RegistrarTest.class'
-    exclude 'org/codarama/diet/minimization/IndexedVsManualMinimizationStrategyTest.class'
+    exclude 'org/codarama/diet/test/util/suite/*Suite*'
+    exclude 'org/codarama/diet/api/IndexedMinimizerTest*'
+    exclude 'org/codarama/diet/api/RegistrarTest*'
 }
 
 //create a single Jar with all dependencies
