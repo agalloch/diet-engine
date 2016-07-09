@@ -3,6 +3,6 @@ jdk:
   - oraclejdk8
 before_install:
   - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-script: "gradle clean build"
+script: "travis_wait 30 gradle build"
 notifications:
   slack: codarama:YVl3XmRANEPWD74rdOErjXGG
