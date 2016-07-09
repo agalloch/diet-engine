@@ -47,8 +47,6 @@ dependencies {
 }
 
 test {
-    maxParallelForks = Runtime.runtime.availableProcessors()
-    forkEvery = 8
 
     // TODO: a more sophisticated method to exclude these fellas
     exclude 'org/codarama/diet/test/util/suite/IntegrationTestsSuite.class'
