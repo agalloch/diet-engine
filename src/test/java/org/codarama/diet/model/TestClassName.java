@@ -1,20 +1,16 @@
 package org.codarama.diet.model;
 
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
 import org.junit.Assert;
-
-import org.codarama.diet.bundle.impl.ManualJarExploder;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 public class TestClassName {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(ManualJarExploder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestClassName.class);
 
 	private final static Set<Character> INVALID_CLASSNAME_CHARS = ImmutableSet.of(
 			'!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '+',

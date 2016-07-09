@@ -1,18 +1,16 @@
 package org.codarama.diet.api;
 
-import java.io.IOException;
-import java.net.URL;
-
-import org.junit.Assert;
-
+import com.google.common.eventbus.Subscribe;
+import com.google.common.io.Resources;
 import org.codarama.diet.event.model.OperationStartEvent;
 import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Tokenizer;
+import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.eventbus.Subscribe;
-import com.google.common.io.Resources;
 import org.junit.experimental.categories.Category;
+
+import java.io.IOException;
+import java.net.URL;
 
 @Category(IntegrationTest.class)
 public class RegistrarTest implements IntegrationTest{
@@ -23,7 +21,7 @@ public class RegistrarTest implements IntegrationTest{
 
 		ListenerRegistrar.listeners(callCountListener).register();
 
-		DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+		IndexedMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
 				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).minimize();
 
 		Assert.assertTrue(callCountListener.getCallCount() >= 3); // this is not too correct as the event bus is in

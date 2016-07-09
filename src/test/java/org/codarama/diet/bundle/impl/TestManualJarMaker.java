@@ -1,6 +1,15 @@
 package org.codarama.diet.bundle.impl;
 
-import static org.junit.Assert.assertTrue;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.io.Resources;
+import org.codarama.diet.bundle.JarMaker;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,19 +19,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.codarama.diet.bundle.JarMaker;
-
-import org.codarama.diet.model.ClassFile;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.io.Resources;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testManualJarMakerContext.xml"})
@@ -72,6 +70,7 @@ public class TestManualJarMaker {
 		
 		final File zipDir = new File(workDir);
 		final Set<File> zipDirFiles = Sets.newHashSet(zipDir.listFiles());
+		assertTrue(!zipDirFiles.isEmpty());
 
 		assertTrue(jar.getName() + ", missing", zipDirFiles.contains(new File(jar.getName())));
 	}
