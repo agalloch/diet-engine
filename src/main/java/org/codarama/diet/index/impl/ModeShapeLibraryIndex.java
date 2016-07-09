@@ -8,10 +8,10 @@ import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.util.Tokenizer;
-import org.infinispan.schematic.document.ParsingException;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
+import org.modeshape.schematic.document.ParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
