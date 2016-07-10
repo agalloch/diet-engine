@@ -1,6 +1,6 @@
 __Status__:
 [![Build Status](https://travis-ci.org/Codarama/diet-engine.svg?branch=master)](https://travis-ci.org/Codarama/diet-engine)
-[![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
+[![Coverage Status](https://coveralls.io/repos/github/Codarama/diet-engine/badge.svg?branch=master)](https://coveralls.io/github/Codarama/diet-engine?branch=master)
 [![Static Code Analysis Status](https://scan.coverity.com/projects/6324/badge.svg)](https://scan.coverity.com/projects/codarama-diet-engine)
 [![Dependency Status](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7/badge.svg?style=flat)](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7)
 
