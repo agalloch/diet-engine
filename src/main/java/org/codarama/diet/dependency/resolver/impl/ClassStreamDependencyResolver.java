@@ -1,15 +1,20 @@
 package org.codarama.diet.dependency.resolver.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.bcel.classfile.*;
+import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.event.model.ClassDependencyResolutionEndEvent;
+import org.codarama.diet.event.model.ClassDependencyResolutionStartEvent;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.util.Java;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Resolves the dependencies of {@link org.codarama.diet.model.ClassStream} which is essentially a byte stream.
@@ -17,7 +22,7 @@ import java.util.Set;
  *
  * Created by ayld on 6/21/2015.
  */
-public class ClassStreamDependencyResolver implements DependencyResolver<ClassStream> {
+public class ClassStreamDependencyResolver extends ListenableComponent implements DependencyResolver<ClassStream> {
 
     private static final String BINARY_ARRAY_ID_PREFIX = "[";
     private static final String BINARY_TYPE_PREFIX = "L";
@@ -29,6 +34,10 @@ public class ClassStreamDependencyResolver implements DependencyResolver<ClassSt
     @Override
     public Set<ClassName> resolve(ClassStream classStream) throws IOException {
 
+        // TODO AOP for the stopwatch and the events
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        eventBus.post(new ClassDependencyResolutionStartEvent("Resolving: " + classStream.toString(), this.getClass()));
+
         final JavaClass javaClass = new ClassParser(classStream.content(), classStream.name().toString()).parse();
 
         final DependencyVisitor dependencyVisitor = new DependencyVisitor(javaClass);
@@ -36,7 +45,15 @@ public class ClassStreamDependencyResolver implements DependencyResolver<ClassSt
 
         classWalker.visit();
 
-        return dependencyVisitor.getFoundDependencies();
+        final Set<ClassName> result = dependencyVisitor.getFoundDependencies();
+
+        stopwatch.stop();
+        eventBus.post(
+                new ClassDependencyResolutionEndEvent("Class dependency resolution took: "
+                        + stopwatch.elapsed(TimeUnit.SECONDS), this.getClass())
+        );
+
+        return result;
     }
 
     @Override

@@ -1,7 +1,12 @@
 package org.codarama.diet.minimization.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
+import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.event.model.MinimizationEndEvent;
+import org.codarama.diet.event.model.MinimizationEvent;
+import org.codarama.diet.event.model.MinimizationStartEvent;
 import org.codarama.diet.index.LibraryIndex;
 import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.model.ClassName;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 
 /**
@@ -21,7 +27,7 @@ import java.util.jar.JarFile;
  *
  * Created by ayld on 20.06.15.
  */
-public class IndexedMinimizationStrategy implements MinimizationStrategy<SourceFile, JarFile, ClassStream>{
+public class IndexedMinimizationStrategy extends ListenableComponent implements MinimizationStrategy<SourceFile, JarFile, ClassStream>{
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexedMinimizationStrategy.class);
 
@@ -32,7 +38,27 @@ public class IndexedMinimizationStrategy implements MinimizationStrategy<SourceF
     @Override
     public Set<ClassStream> minimize(Set<SourceFile> sources, Set<JarFile> libraries) throws IOException {
         final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
+
+        eventBus.post(
+                new MinimizationStartEvent("Minimization starting on: " + sources.size() + " sources, " + libraries.size() + " libs",
+                        this.getClass())
+        );
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        eventBus.post(
+                new MinimizationEvent("Starting indexing",
+                        this.getClass())
+        );
+
         index.index(libraries);
+
+        eventBus.post(
+                new MinimizationEvent("Indexing done in: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds",
+                        this.getClass())
+        );
+        eventBus.post(
+                new MinimizationEvent("Index querying starting.",
+                        this.getClass())
+        );
 
         final Set<ClassStream> result = Sets.newHashSet();
         final Set<ClassName> resultNames = Sets.newHashSet();
@@ -40,13 +66,31 @@ public class IndexedMinimizationStrategy implements MinimizationStrategy<SourceF
             resolveAndAddAllFromIndex(sourceDep, result, resultNames);
         }
 
+        stopwatch.stop();
+        eventBus.post(
+                new MinimizationEndEvent("Minimization done in: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds",
+                        this.getClass())
+        );
+
         return result;
     }
 
     private void resolveAndAddAllFromIndex(ClassName depName, Set<ClassStream> deps, Set<ClassName> depNames) {
         if (!depNames.contains(depName) && index.contains(depName)) {
 
+            final Stopwatch stopwatch = Stopwatch.createStarted();
+            eventBus.post(
+                    new MinimizationEvent("Index.get called for: " + depName,
+                            this.getClass())
+            );
+
             final ClassStream dep = index.get(depName);
+
+            stopwatch.stop();
+            eventBus.post(
+                    new MinimizationEvent("Index.get done in: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " millis",
+                            this.getClass())
+            );
 
             deps.add(dep);
             depNames.add(depName);

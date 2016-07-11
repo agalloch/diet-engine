@@ -13,17 +13,17 @@
 		
 		<bean id="eventBus" class="com.google.common.eventbus.EventBus"/>
 
-        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver">
+			<property name="eventBus" ref="eventBus"/>
+		</bean>
 
 		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentClassFileDependencyResolver">
-			<property name="eventBus">
-				<bean class="com.google.common.eventbus.EventBus"/>
-			</property>
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
 					<constructor-arg value="50" type="int"/>
 				</bean>
 			</property>
             <property name="classStreamResolver" ref="classStreamResolver"/>
-        </bean>
+			<property name="eventBus" ref="eventBus"/>
+		</bean>
 </beans>

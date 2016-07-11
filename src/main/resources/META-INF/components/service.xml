@@ -13,7 +13,7 @@
             <property name="classStreamResolver" ref="classStreamResolver"/>
         </bean>
 
-        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver" parent="listenableComponent"/>
 
 		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="listenableComponent"/>
 		
@@ -35,7 +35,7 @@
 			</property>
 		</bean>
 
-        <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy">
+        <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy" parent="listenableComponent">
             <property name="index" ref="modeShapeIndex"/>
             <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
             <property name="classDependencyResolver" ref="classStreamResolver"/>

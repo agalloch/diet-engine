@@ -36,8 +36,14 @@
 		<constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
 	</bean>
 	
-	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
-	
+	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.AsyncEventBus">
+		<constructor-arg ref="eventBusExecutor"/>
+	</bean>
+
+	<bean id="eventBusExecutor" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+		<constructor-arg value="1"/>
+	</bean>
+
 	<bean id="listenableComponent" class="org.codarama.diet.component.ListenableComponent" abstract="true">
 		<property name="eventBus" ref="statusUpdateEventBus"/>
 	</bean>
