@@ -7,9 +7,9 @@ package org.codarama.diet.api.reporting;
 public interface MinimizationStatistics {
 
 	/**
-	 * @return the total time it took to finish the minimization process (in milliseconds)
+	 * @return a formatted message telling the total time it took to finish the minimization process
 	 */
-	long getTotalExecutionTime();
+	String getFormattedExecutionTime();
 
 	/**
 	 * @return the number of sources that were considered by the minimization engine

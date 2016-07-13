@@ -4,7 +4,6 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -12,7 +11,6 @@ import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.api.reporting.MinimizationStatistics;
 import org.codarama.diet.model.ClassName;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Unit tests for the {@link DefaultMinimizer}.
@@ -32,7 +30,7 @@ public class MinimizerUnitTest {
       when(mockStatistics.getMinimizedDependenciesCount()).thenReturn(10);
       when(mockStatistics.getSourceFilesCount()).thenReturn(200);
       when(mockStatistics.getTotalDependenciesCount()).thenReturn(1000);
-      when(mockStatistics.getTotalExecutionTime()).thenReturn(5L * 60L * 1000L);
+      when(mockStatistics.getFormattedExecutionTime()).thenReturn(String.valueOf(5L * 60L * 1000L));
 
       final JarFile minimizationResult = mock(JarFile.class);
       when(minimizationResult.getName()).thenReturn("diet.jar");

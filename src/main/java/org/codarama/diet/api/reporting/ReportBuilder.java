@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.jar.JarFile;
 
+import com.google.common.base.Stopwatch;
 import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.SourceFile;
 
@@ -13,10 +14,10 @@ import org.codarama.diet.model.SourceFile;
  */
 public class ReportBuilder {
 
-	private long startTime;
-
 	private MinimizationStatisticsImplementation statistics = new MinimizationStatisticsImplementation();
 	private MinimizationReportImplementation report = new MinimizationReportImplementation(statistics);
+
+	private Stopwatch stopwatch;
 
 	private ReportBuilder() {
 		// Disable class instantiation from other classes
@@ -30,7 +31,7 @@ public class ReportBuilder {
 	 */
 	public static ReportBuilder startClock() {
 		ReportBuilder builder = new ReportBuilder();
-		builder.startTime = System.currentTimeMillis();
+		builder.stopwatch = Stopwatch.createStarted();
 		return builder;
 	}
 
@@ -101,8 +102,8 @@ public class ReportBuilder {
 	 * @return the instance of the {@link ReportBuilder} for chaining purposes
 	 */
 	public ReportBuilder stopClock() {
-		long endTime = System.currentTimeMillis();
-		this.statistics.totalTime = endTime - startTime;
+		this.stopwatch.stop();
+		this.statistics.totalTimeMsg = stopwatch.toString();
 
 		return this;
 	}
@@ -139,11 +140,11 @@ public class ReportBuilder {
 		private int minimizedDependenciesCount;
 		private int totalDependenciesCount;
 		private int sourcesCount;
-		private long totalTime;
+		private String totalTimeMsg;
 
 		@Override
-		public long getTotalExecutionTime() {
-			return this.totalTime;
+		public String getFormattedExecutionTime() {
+			return this.totalTimeMsg;
 		}
 
 		@Override

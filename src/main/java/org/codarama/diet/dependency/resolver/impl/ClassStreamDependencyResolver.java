@@ -50,7 +50,7 @@ public class ClassStreamDependencyResolver extends ListenableComponent implement
         stopwatch.stop();
         eventBus.post(
                 new ClassDependencyResolutionEndEvent("Class dependency resolution took: "
-                        + stopwatch.elapsed(TimeUnit.SECONDS), this.getClass())
+                        + stopwatch.toString(), this.getClass())
         );
 
         return result;
