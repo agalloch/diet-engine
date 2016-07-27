@@ -62,18 +62,11 @@ Diet can notify you for updates on what it is currently doing. For instanse if y
 resolving the dependencies of a binary class you can:
 
 ```java
-ListenerRegistrar.listeners(new Object() {
-			
-    @Subscribe
-	public void listenOnStart(ClassDependencyResolutionStartEvent e) {
-	    // this will be called when the resolution starts
-	}
-			
-	@Subscribe
-	public void listenOnEnd(ClassDependencyResolutionEndEvent e) {
-	    // this will be called when the resolution ends
-	}
-}).register();
+ListenerRegistrar.register(new EventListener<ComponentEvent>() {
+    public void on(ComponentEvent event) {
+        // will be called on any event
+    }
+});
 ```
 
 There is a whole hierarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
