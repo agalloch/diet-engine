@@ -4,44 +4,39 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		
-		http://www.springframework.org/schema/util
-		http://www.springframework.org/schema/util/spring-util.xsd">
-		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="listenableComponent">
-            <property name="classStreamResolver" ref="classStreamResolver"/>
-        </bean>
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 
-        <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver" parent="listenableComponent"/>
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
 
-		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="listenableComponent"/>
-		
-		<bean id="jarMaker" class="org.codarama.diet.bundle.impl.ManualJarMaker">
-			<property name="zippedJarName" value="#{defaultOutJar}"/>
-		</bean>
+    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver"
+          parent="listenableComponent">
+        <property name="classStreamResolver" ref="classStreamResolver"/>
+    </bean>
 
-		<bean id="streamJarMaker" class="org.codarama.diet.bundle.impl.StreamJarMaker">
-			<property name="zippedJarName" value="#{defaultOutJar}"/>
-		</bean>
+    <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"
+          parent="listenableComponent"/>
 
-		<bean id="unanimousMatcher" class="org.codarama.diet.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
-			<property name="conditions">
-				<set>
-					<bean class="org.codarama.diet.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
-					<bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
-					<bean class="org.codarama.diet.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
-				</set>
-			</property>
-		</bean>
+    <bean id="sourceDependencyResolver"
+          class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver"
+          parent="listenableComponent"/>
 
-        <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy" parent="listenableComponent">
-            <property name="index" ref="modeShapeIndex"/>
-            <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
-            <property name="classDependencyResolver" ref="classStreamResolver"/>
-        </bean>
+    <bean id="jarMaker" class="org.codarama.diet.bundle.impl.ManualJarMaker">
+        <property name="zippedJarName" value="#{defaultOutJar}"/>
+    </bean>
 
-        <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
-            <constructor-arg type="java.lang.String" value="indexConfig.json"/>
-        </bean>
+    <bean id="streamJarMaker" class="org.codarama.diet.bundle.impl.StreamJarMaker">
+        <property name="zippedJarName" value="#{defaultOutJar}"/>
+    </bean>
+
+    <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy"
+          parent="listenableComponent">
+        <property name="index" ref="modeShapeIndex"/>
+        <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+        <property name="classDependencyResolver" ref="classStreamResolver"/>
+    </bean>
+
+    <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
+        <constructor-arg type="java.lang.String" value="indexConfig.json"/>
+    </bean>
 </beans>

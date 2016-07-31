@@ -3,26 +3,31 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
-		
-		profile="concurrent">
-		
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentClassFileDependencyResolver" parent="listenableComponent">
-			<property name="threadPool">
-				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
-					<constructor-arg value="${cuncurrent.class.resolver.thread.pool.size}" type="int"/>
-				</bean>
-			</property>
-            <property name="classStreamResolver">
-                <bean class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver" parent="listenableComponent"/>
-            </property>
-        </bean>
-		
-		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver" parent="listenableComponent">
-			<property name="threadPool">
-				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
-					<constructor-arg value="${cuncurrent.source.resolver.thread.pool.size}" type="int"/>
-				</bean>
-			</property>
-		</bean>
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd"
+
+       profile="concurrent">
+
+    <bean id="classDependencyResolver"
+          class="org.codarama.diet.dependency.resolver.impl.ConcurrentClassFileDependencyResolver"
+          parent="listenableComponent">
+        <property name="threadPool">
+            <bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+                <constructor-arg value="${cuncurrent.class.resolver.thread.pool.size}" type="int"/>
+            </bean>
+        </property>
+        <property name="classStreamResolver">
+            <bean class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"
+                  parent="listenableComponent"/>
+        </property>
+    </bean>
+
+    <bean id="sourceDependencyResolver"
+          class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver"
+          parent="listenableComponent">
+        <property name="threadPool">
+            <bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+                <constructor-arg value="${cuncurrent.source.resolver.thread.pool.size}" type="int"/>
+            </bean>
+        </property>
+    </bean>
 </beans>

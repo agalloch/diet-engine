@@ -25,58 +25,58 @@ public class TestTokenizer {
         assertTrue(tokens.size() == 1);
     }
 
-	@Test
-	public void tokenize() {
-		final String test = "why did the chicken cross the road ?";
-		
-		final List<String> tokens = Tokenizer.delimiter(" ").tokenize(test).tokens();
-		assertNotNull(tokens);
-		
-		final List<String> splitTest = Lists.newArrayList(Splitter.on(" ").split(test));
-		assertTrue(tokens.size() == splitTest.size());
-		
-		for (String part : splitTest) {
-			assertTrue(tokens.contains(part));
-		}
-	}
-	
-	@Test
-	public void makeSureTokenizeDoesNotUseRegularExpressions() {
-		
-		final String test = "regexp.sux.donkey.balls";
-		
-		final List<String> regexSplit = ImmutableList.copyOf(Splitter.onPattern(".").split(test));
-		final List<String> nonRegexSplit = Tokenizer.delimiter(".").tokenize(test).tokens();
-		
-		assertFalse(regexSplit.equals(nonRegexSplit));
-	}
-	
-	@Test
-	public void range() {
-		
-		final String test = "somewhere.over.dat.rainbow";
-		
-		final List<String> tokens = Tokenizer.delimiter(".").tokenize(test).tokens();
-		for (int i = 0; i < tokens.size(); i++) {
-			assertTrue(tokens.subList(0, i).equals(Tokenizer.delimiter(".").tokenize(test).tokensIn(Range.closed(0, i))));
-		}
-	}
-	
-	@Test
-	public void lastToken() {
-		
-		final String last = "one";
-		final String lastToken = Tokenizer.delimiter(" ").tokenize("the source is strong in this " + last).lastToken();
-		
-		assertEquals(last, lastToken);
-	}
-	
-	@Test
-	public void firstToken() {
-		
-		final String first = "the";
-		final String firstToken = Tokenizer.delimiter(" ").tokenize(first + " source is strong in this one").firstToken();
-		
-		assertEquals(first, firstToken);
-	}
+    @Test
+    public void tokenize() {
+        final String test = "why did the chicken cross the road ?";
+
+        final List<String> tokens = Tokenizer.delimiter(" ").tokenize(test).tokens();
+        assertNotNull(tokens);
+
+        final List<String> splitTest = Lists.newArrayList(Splitter.on(" ").split(test));
+        assertTrue(tokens.size() == splitTest.size());
+
+        for (String part : splitTest) {
+            assertTrue(tokens.contains(part));
+        }
+    }
+
+    @Test
+    public void makeSureTokenizeDoesNotUseRegularExpressions() {
+
+        final String test = "regexp.sux.donkey.balls";
+
+        final List<String> regexSplit = ImmutableList.copyOf(Splitter.onPattern(".").split(test));
+        final List<String> nonRegexSplit = Tokenizer.delimiter(".").tokenize(test).tokens();
+
+        assertFalse(regexSplit.equals(nonRegexSplit));
+    }
+
+    @Test
+    public void range() {
+
+        final String test = "somewhere.over.dat.rainbow";
+
+        final List<String> tokens = Tokenizer.delimiter(".").tokenize(test).tokens();
+        for (int i = 0; i < tokens.size(); i++) {
+            assertTrue(tokens.subList(0, i).equals(Tokenizer.delimiter(".").tokenize(test).tokensIn(Range.closed(0, i))));
+        }
+    }
+
+    @Test
+    public void lastToken() {
+
+        final String last = "one";
+        final String lastToken = Tokenizer.delimiter(" ").tokenize("the source is strong in this " + last).lastToken();
+
+        assertEquals(last, lastToken);
+    }
+
+    @Test
+    public void firstToken() {
+
+        final String first = "the";
+        final String firstToken = Tokenizer.delimiter(" ").tokenize(first + " source is strong in this one").firstToken();
+
+        assertEquals(first, firstToken);
+    }
 }

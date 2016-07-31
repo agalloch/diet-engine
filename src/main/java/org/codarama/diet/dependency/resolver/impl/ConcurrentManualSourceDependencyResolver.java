@@ -18,44 +18,44 @@ import org.springframework.beans.factory.annotation.Required;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public class ConcurrentManualSourceDependencyResolver extends ManualParseSourceDependencyResolver implements DependencyResolver<SourceFile>{
+public class ConcurrentManualSourceDependencyResolver extends ManualParseSourceDependencyResolver implements DependencyResolver<SourceFile> {
 
-	private ExecutorService threadPool;
-	
-	@Override
-	public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
-		final Set<ClassName> result = Sets.newHashSet();
+    private ExecutorService threadPool;
 
-		final Set<Callable<Set<ClassName>>> resolutionTasks = Sets.newHashSetWithExpectedSize(sources.size());
-		for (final SourceFile source : sources) {
-			
-			final Callable<Set<ClassName>> resolutionTask = new Callable<Set<ClassName>>() {
-				
-				@Override
-				public Set<ClassName> call() throws Exception {
-					return resolve(source);
-				}
-			};
-			resolutionTasks.add(resolutionTask);
-		}
-		try {
-			final List<Future<Set<ClassName>>> futures = threadPool.invokeAll(resolutionTasks);
-			for (Future<Set<ClassName>> f : futures) {
-				
-				result.addAll(f.get());
-				
-			}
-			threadPool.shutdown();
-			threadPool.awaitTermination(1, TimeUnit.DAYS); // FOREVER !!!
-			
-		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
-		}
-		return ImmutableSet.copyOf(result);
-	}
+    @Override
+    public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
+        final Set<ClassName> result = Sets.newHashSet();
 
-	@Required
-	public void setThreadPool(ExecutorService threadPool) {
-		this.threadPool = threadPool;
-	}
+        final Set<Callable<Set<ClassName>>> resolutionTasks = Sets.newHashSetWithExpectedSize(sources.size());
+        for (final SourceFile source : sources) {
+
+            final Callable<Set<ClassName>> resolutionTask = new Callable<Set<ClassName>>() {
+
+                @Override
+                public Set<ClassName> call() throws Exception {
+                    return resolve(source);
+                }
+            };
+            resolutionTasks.add(resolutionTask);
+        }
+        try {
+            final List<Future<Set<ClassName>>> futures = threadPool.invokeAll(resolutionTasks);
+            for (Future<Set<ClassName>> f : futures) {
+
+                result.addAll(f.get());
+
+            }
+            threadPool.shutdown();
+            threadPool.awaitTermination(1, TimeUnit.DAYS); // FOREVER !!!
+
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        return ImmutableSet.copyOf(result);
+    }
+
+    @Required
+    public void setThreadPool(ExecutorService threadPool) {
+        this.threadPool = threadPool;
+    }
 }

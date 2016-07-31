@@ -13,17 +13,17 @@ public class TestClassFile {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestClassFile.class);
 
-	@Test
-	public void valid() {
+    @Test
+    public void valid() {
         final ClassFile classFile = ClassFile.fromClasspath("test-classes/ClassName.class");
         Assert.assertNotNull(classFile);
     }
-	
-	@Test
-	public void dependencies() {
-		final Set<ClassName> dependencies = ClassFile.fromClasspath("test-classes/ClassName.class").dependencies();
-		
-		Assert.assertTrue(dependencies != null);
+
+    @Test
+    public void dependencies() {
+        final Set<ClassName> dependencies = ClassFile.fromClasspath("test-classes/ClassName.class").dependencies();
+
+        Assert.assertTrue(dependencies != null);
 
         final int expectedCount = 2;
         final boolean isDepCountExpected = dependencies.size() == expectedCount;
@@ -43,13 +43,13 @@ public class TestClassFile {
         );
         Assert.assertEquals(expectedFoundDependencies, dependencies);
 
-		// I should not be able to change the state
-		try {
-			dependencies.add(new ClassName("a.name.that.should.Fail"));
-		} catch (UnsupportedOperationException e) {
-			// yay !
-			return;
-		}
-		Assert.fail(); // awww
-	}
+        // I should not be able to change the state
+        try {
+            dependencies.add(new ClassName("a.name.that.should.Fail"));
+        } catch (UnsupportedOperationException e) {
+            // yay !
+            return;
+        }
+        Assert.fail(); // awww
+    }
 }
