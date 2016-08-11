@@ -15,6 +15,6 @@
 			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
 		
-		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentResolver"/>
+		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
 		
 </beans>

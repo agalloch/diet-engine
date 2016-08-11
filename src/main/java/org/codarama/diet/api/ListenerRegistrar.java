@@ -17,7 +17,7 @@ public final class ListenerRegistrar {
     }
 
     public static <E extends ComponentEvent> void register(EventListener<E> listener) {
-        Components.EVENT_BUS.<EventBus>getInstance().register(new GuavaListener<E>(listener));
+        Components.EVENT_BUS.<EventBus>getInstance().register(new GuavaListener<>(listener));
     }
 
     private static class GuavaListener<E extends ComponentEvent> {

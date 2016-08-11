@@ -13,7 +13,7 @@ public enum Contexts {
 
     private final ApplicationContext context;
 
-    private Contexts(ApplicationContext context) {
+    Contexts(ApplicationContext context) {
         this.context = context;
 
         final String activeProfiles = System.getProperty(SPRING_PROFILES_ENV_VAR_NAME);

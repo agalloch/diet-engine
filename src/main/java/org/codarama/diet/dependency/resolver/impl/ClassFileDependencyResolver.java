@@ -22,7 +22,7 @@ import com.google.common.collect.Sets;
 import org.codarama.diet.model.ClassStream;
 import org.springframework.beans.factory.annotation.Required;
 
-public class ClassFileDependencyResolver extends ListenableComponent implements DependencyResolver<ClassFile> {
+public class ClassFileDependencyResolver implements DependencyResolver<ClassFile> {
 
     private DependencyResolver<ClassStream> classStreamResolver;
 

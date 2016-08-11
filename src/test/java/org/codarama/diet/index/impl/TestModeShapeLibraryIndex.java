@@ -96,7 +96,6 @@ public class TestModeShapeLibraryIndex {
         assertEquals(found.name(), testName);
         assertTrue(found.content().available() > 0);
 
-
         testName = new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata");
         found = modeShapeIndex.find(testName);
 
@@ -122,7 +121,6 @@ public class TestModeShapeLibraryIndex {
         assertNotNull(found);
         assertEquals(found.name(), testName);
         assertTrue(found.content().available() > 0);
-
 
         testName = new ClassName("org.primefaces.facelets.MethodRule$MethodBindingMetadata");
         found = modeShapeIndex.get(testName);

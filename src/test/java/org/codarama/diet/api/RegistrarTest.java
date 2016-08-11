@@ -1,14 +1,18 @@
 package org.codarama.diet.api;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.io.Resources;
 import org.codarama.diet.api.reporting.listener.EventListener;
+import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.event.model.*;
 import org.codarama.diet.test.util.suite.IntegrationTest;
+import org.codarama.diet.util.Components;
 import org.codarama.diet.util.Tokenizer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,38 +23,27 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Category(IntegrationTest.class)
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:META-INF/test-contexts/testListenerRegistrar.xml"})
 public class RegistrarTest implements IntegrationTest {
 
-    @Test
-    public void jarExtractionUpdateCallCount() throws IOException {
-        final Listener callCountListener = new Listener();
-
-        ListenerRegistrar.register(callCountListener);
-
-        IndexedMinimizer
-                .sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-                .libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
-                .minimize();
-
-        Assert.assertTrue(callCountListener.getCallCount() >= 3); // this is not too correct as the event bus is in
-        // another thread and call count may vary
-    }
+    private final EventBus statusUpdateEventBus = Components.EVENT_BUS.getInstance();
 
     @Test
-    public void parentSubscriptionShouldAlsoFireOnChildren() throws IOException {
+    public void parentSubscriptionShouldAlsoFireOnChildren() throws IOException, InterruptedException {
         final SupertypeListener supertypeListener = new SupertypeListener();
         ListenerRegistrar.register(supertypeListener);
 
-        IndexedMinimizer
-                .sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-                .libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
-                .minimize();
+        statusUpdateEventBus.post(new MinimizationStartEvent("subStartTest", null));
+        statusUpdateEventBus.post(new MinimizationEndEvent("subEndTest", null));
+        statusUpdateEventBus.post(new MinimizationEvent("superTest", null));
 
-        assertTrue("Listener not called for supertype", supertypeListener.gotSupertype);
+        // XXX not ideal, but when testing API classes we can't inject a sync event bus
+        // currently the async event bus doesn't post everything when expected
+        Thread.sleep(2000);
+
         assertTrue("Listener not called for start subtype", supertypeListener.gotStartSubtype);
         assertTrue("Listener not called for end subtype", supertypeListener.gotEndSubtype);
+        assertTrue("Listener not called for supertype", supertypeListener.gotSupertype);
+        assertTrue("3 calls expected, but got: " + supertypeListener.callCount, supertypeListener.callCount == 3);
     }
 
     private String toPath(URL uri) {
@@ -78,20 +71,6 @@ public class RegistrarTest implements IntegrationTest {
             } else {
                 gotSupertype = true;
             }
-        }
-    }
-
-    private static class Listener implements EventListener<OperationStartEvent> {
-
-        private int callCount = 0;
-
-        public int getCallCount() {
-            return callCount;
-        }
-
-        @Override
-        public void on(OperationStartEvent u) {
-            callCount++;
         }
     }
 }

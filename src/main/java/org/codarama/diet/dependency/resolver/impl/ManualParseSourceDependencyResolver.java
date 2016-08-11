@@ -20,11 +20,10 @@ import com.google.common.io.Resources;
 
 @ThreadSafe
 // TODO Use JavaParser instead of parsing manually
-public class ManualParseSourceDependencyResolver extends ListenableComponent implements DependencyResolver<SourceFile> {
+public class ManualParseSourceDependencyResolver implements DependencyResolver<SourceFile> {
 
     @Override
     public Set<ClassName> resolve(SourceFile source) throws IOException {
-        eventBus.post(new SourceDependencyResolutionStartEvent("resolving: " + source.physicalFile().getAbsolutePath(), this.getClass()));
 
         final String sourceFileContent = Resources.toString(source.physicalFile().toURI().toURL(), Charsets.UTF_8);
 
@@ -53,9 +52,6 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
                 result.add(new ClassName(dependency));
             }
         }
-
-        eventBus.post(new SourceDependencyResolutionEndEvent("resolved: " + result, this.getClass()));
-
         return result;
     }
 

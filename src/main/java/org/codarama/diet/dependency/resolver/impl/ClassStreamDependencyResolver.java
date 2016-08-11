@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by ayld on 6/21/2015.
  */
-public class ClassStreamDependencyResolver extends ListenableComponent implements DependencyResolver<ClassStream> {
+public class ClassStreamDependencyResolver implements DependencyResolver<ClassStream> {
 
     private static final String BINARY_ARRAY_ID_PREFIX = "[";
     private static final String BINARY_TYPE_PREFIX = "L";
@@ -34,10 +34,6 @@ public class ClassStreamDependencyResolver extends ListenableComponent implement
     @Override
     public Set<ClassName> resolve(ClassStream classStream) throws IOException {
 
-        // TODO AOP for the stopwatch and the events
-        final Stopwatch stopwatch = Stopwatch.createStarted();
-        eventBus.post(new ClassDependencyResolutionStartEvent("Resolving: " + classStream.toString(), this.getClass()));
-
         final JavaClass javaClass = new ClassParser(classStream.content(), classStream.name().toString()).parse();
 
         final DependencyVisitor dependencyVisitor = new DependencyVisitor(javaClass);
@@ -45,15 +41,7 @@ public class ClassStreamDependencyResolver extends ListenableComponent implement
 
         classWalker.visit();
 
-        final Set<ClassName> result = dependencyVisitor.getFoundDependencies();
-
-        stopwatch.stop();
-        eventBus.post(
-                new ClassDependencyResolutionEndEvent("Class dependency resolution took: "
-                        + stopwatch.toString(), this.getClass())
-        );
-
-        return result;
+        return dependencyVisitor.getFoundDependencies();
     }
 
     @Override

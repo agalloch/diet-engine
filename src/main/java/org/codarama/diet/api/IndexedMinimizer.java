@@ -1,24 +1,22 @@
 package org.codarama.diet.api;
 
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+
 import org.codarama.diet.api.reporting.MinimizationReport;
 import org.codarama.diet.api.reporting.ReportBuilder;
 import org.codarama.diet.bundle.JarMaker;
 import org.codarama.diet.minimization.MinimizationStrategy;
-import org.codarama.diet.model.ClassFile;
-import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.model.SourceFile;
 import org.codarama.diet.util.Components;
 import org.codarama.diet.util.Files;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
+import com.google.common.collect.Sets;
 
 /**
  * A minimizer that indexes all .class files in the jars it's trying to minimize.
@@ -67,11 +65,9 @@ public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
         reportBuilder.sources(sources).allLibsCount(countClasses(libs));
 
         final Set<ClassStream> minimized = minimizationStrategy.minimize(sources, libs);
-
         reportBuilder.minimizedLibs(minimized);
 
         final JarFile minimizedJar = jarMaker.zip(minimized);
-
         reportBuilder.setJarFile(minimizedJar).stopClock();
 
         return reportBuilder.getReport();
@@ -91,31 +87,5 @@ public class IndexedMinimizer extends DefaultMinimizer implements Minimizer{
             result.add(new JarFile(jar));
         }
         return result;
-    }
-
-
-    @Override
-    public Minimizer libs(String pathToLibraries) throws IOException {
-        return super.libs(pathToLibraries);
-    }
-
-    @Override
-    public Minimizer libs(Set<File> artifactLocations) {
-        return super.libs(artifactLocations);
-    }
-
-    @Override
-    public Minimizer output(String pathToOutput) {
-        return super.output(pathToOutput);
-    }
-
-    @Override
-    public Minimizer forceInclude(JarFile... jars) {
-        return super.forceInclude(jars);
-    }
-
-    @Override
-    public Minimizer forceInclude(ClassName... classes) {
-        return super.forceInclude(classes);
     }
 }
