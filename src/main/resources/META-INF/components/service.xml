@@ -16,8 +16,7 @@
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver"
-          parent="listenableComponent">
+    <bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver">
         <property name="classStreamResolver" ref="classStreamResolver"/>
     </bean>
 

@@ -11,12 +11,7 @@
 		
 		<import resource="classpath:META-INF/common.xml" />
 		
-		<bean id="eventBus" class="com.google.common.eventbus.EventBus"/>
-		
 		<bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver">
-			<property name="eventBus">
-				<bean class="com.google.common.eventbus.EventBus"/>
-			</property>
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
 					<constructor-arg value="50" type="int"/>

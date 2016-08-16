@@ -23,10 +23,12 @@ import org.codarama.diet.model.ClassFile;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.model.SourceFile;
+import org.codarama.diet.test.util.suite.IntegrationTest;
 import org.codarama.diet.util.Files;
 import org.codarama.diet.util.Tokenizer;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,9 +36,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.io.Resources;
 
+@Category(IntegrationTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-contexts/testProfilingAdvice.xml"})
-public class TestProfilingAdvice {
+public class TestProfilingAdvice implements IntegrationTest {
 
     @Autowired
     private MinimizationStrategy<SourceFile, JarFile, ClassStream> indexedMinimizationStrategy;
