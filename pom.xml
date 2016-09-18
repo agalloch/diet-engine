@@ -271,6 +271,10 @@
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
+                        <excludes>
+                            <exclude>org.codarama.diet.event.model.*</exclude>
+                            <exclude>**/*Aspect.*</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
             </plugins>
