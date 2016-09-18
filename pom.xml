@@ -231,6 +231,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.5.201505241946</version>
+                <configuration>
+                    <excludes>
+                        <exclude>org.codarama.diet.event.model.*</exclude>
+                        <exclude>**/*Aspect.*</exclude>
+                        <exclude>**/*Exception.*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -271,10 +278,6 @@
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
-                        <excludes>
-                            <exclude>org.codarama.diet.event.model.*</exclude>
-                            <exclude>**/*Aspect.*</exclude>
-                        </excludes>
                     </configuration>
                 </plugin>
             </plugins>
