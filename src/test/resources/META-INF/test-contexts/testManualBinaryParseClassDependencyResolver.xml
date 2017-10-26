@@ -16,8 +16,7 @@
 		</bean>
 
         <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
-
-		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver" parent="parentResolver">
+		<bean id="classDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ClassFileDependencyResolver">
             <property name="classStreamResolver" ref="classStreamResolver"/>
         </bean>
 		

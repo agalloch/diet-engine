@@ -81,7 +81,7 @@ public class IndexedMinimizerTest implements IntegrationTest{
         final JarFile mandatoryJar = new JarFile(new File(
                 toPath(Resources.getResource("test-classes/test-lib-dir/commons-lang3-3.1.jar"))));
 
-        final JarFile outJar = DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+        final JarFile outJar = IndexedMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
                 .libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
                 .forceInclude(new ClassName("org.primefaces.json.JSONArray")).forceInclude(mandatoryJar).minimize()
                 .getJar();

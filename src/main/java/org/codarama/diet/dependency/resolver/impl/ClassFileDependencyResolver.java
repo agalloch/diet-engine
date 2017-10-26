@@ -22,25 +22,25 @@ import com.google.common.collect.Sets;
 import org.codarama.diet.model.ClassStream;
 import org.springframework.beans.factory.annotation.Required;
 
-public class ClassFileDependencyResolver extends ListenableComponent implements DependencyResolver<ClassFile>{
+public class ClassFileDependencyResolver implements DependencyResolver<ClassFile> {
 
     private DependencyResolver<ClassStream> classStreamResolver;
 
-	@Override
-	public Set<ClassName> resolve(ClassFile classFile) throws IOException {
+    @Override
+    public Set<ClassName> resolve(ClassFile classFile) throws IOException {
         return classStreamResolver.resolve(classFile.stream());
-	}
-	
-	@Override
-	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
-		final Set<ClassName> result = Sets.newHashSet();
+    }
 
-		for (ClassFile classFile : classFiles) {
-			result.addAll(resolve(classFile));
-		}
+    @Override
+    public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
+        final Set<ClassName> result = Sets.newHashSet();
 
-		return result;
-	}
+        for (ClassFile classFile : classFiles) {
+            result.addAll(resolve(classFile));
+        }
+
+        return result;
+    }
 
     @Required
     public void setClassStreamResolver(DependencyResolver<ClassStream> classStreamResolver) {

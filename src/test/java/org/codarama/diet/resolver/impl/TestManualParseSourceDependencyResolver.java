@@ -22,47 +22,46 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "classpath:META-INF/test-contexts/testManualParseSourceDependencyResolverContext.xml" })
+@ContextConfiguration({"classpath:META-INF/test-contexts/testManualParseSourceDependencyResolverContext.xml"})
 public class TestManualParseSourceDependencyResolver {
 
-	private static final String JAVA_IMPORT_KEYWOD = "import";
+    private static final String JAVA_IMPORT_KEYWOD = "import";
 
-	@Autowired
-	private DependencyResolver<SourceFile> sourceDependencyResolver;
+    @Autowired
+    private DependencyResolver<SourceFile> sourceDependencyResolver;
 
-	@Test
-	public void testResolve() throws IOException, URISyntaxException {
-		final URL validSourceUrl = Resources.getResource("test-classes/ValidCoffee.java");
+    @Test
+    public void testResolve() throws IOException, URISyntaxException {
+        final URL validSourceUrl = Resources.getResource("test-classes/ValidCoffee.java");
 
-		// get dependencies in a way different than the resolver
-		final String content = Resources.toString(validSourceUrl, Charsets.UTF_8);
-		final String[] lines = content.split("\n");
+        // get dependencies in a way different than the resolver
+        final String content = Resources.toString(validSourceUrl, Charsets.UTF_8);
+        final String[] lines = content.split("\n");
 
-		final Set<String> dependencies = new HashSet<>();
-		for (String line : lines) {
-			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
+        final Set<String> dependencies = new HashSet<>();
+        for (String line : lines) {
+            if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
 
-				final String dependency = line.split(" ")[1].replaceAll(";", "").replaceAll("\r", ""); // not very
-																										// pretty ...
-				dependencies.add(dependency);
-			}
-		}
+                final String dependency = line.split(" ")[1].replaceAll(";", "").replaceAll("\r", ""); // pretty ...
+                dependencies.add(dependency);
+            }
+        }
 
-		// get dependencies through the resolver
-		final Set<ClassName> resolvedDependencies = sourceDependencyResolver.resolve(SourceFile.fromFile(new File(
-				validSourceUrl.toURI())));
+        // get dependencies through the resolver
+        final Set<ClassName> resolvedDependencies = sourceDependencyResolver.resolve(SourceFile.fromFile(new File(
+                validSourceUrl.toURI())));
 
-		// result sets should match
-		Assert.assertEquals(dependencies, toStringSet(resolvedDependencies));
-	}
+        // result sets should match
+        Assert.assertEquals(dependencies, toStringSet(resolvedDependencies));
+    }
 
-	private Set<String> toStringSet(Set<ClassName> toConvert) {
-		final Set<String> result = Sets.newHashSet();
+    private Set<String> toStringSet(Set<ClassName> toConvert) {
+        final Set<String> result = Sets.newHashSet();
 
-		for (ClassName name : toConvert) {
-			result.add(name.toString());
-		}
+        for (ClassName name : toConvert) {
+            result.add(name.toString());
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

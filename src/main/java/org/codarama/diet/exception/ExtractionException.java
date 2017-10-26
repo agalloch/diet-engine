@@ -1,10 +1,10 @@
 package org.codarama.diet.exception;
 
-public class ExtractionException extends RuntimeException{
+public class ExtractionException extends RuntimeException {
 
-	public ExtractionException(String message) {
-		super(message);
-	}
+    public ExtractionException(String message) {
+        super(message);
+    }
 
-	private static final long serialVersionUID = -6910257169569118589L;
+    private static final long serialVersionUID = -6910257169569118589L;
 }

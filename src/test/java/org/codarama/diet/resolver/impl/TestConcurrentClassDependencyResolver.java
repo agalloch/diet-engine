@@ -18,16 +18,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration({"classpath:META-INF/test-contexts/testConcurrentClassDependencyResolver.xml"})
 public class TestConcurrentClassDependencyResolver {
 
-	@Autowired
-	private DependencyResolver<ClassFile> classDependencyResolver;
-	
-	@Test
-	public void concurrentResolve() throws IOException {
-		final Set<ClassName> resolved = classDependencyResolver.resolve(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"));
-		
-		Assert.assertTrue(resolved != null);
-		Assert.assertTrue(!resolved.isEmpty());
-		Assert.assertEquals(1, resolved.size());
-		Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), resolved.iterator().next());
-	}
+    @Autowired
+    private DependencyResolver<ClassFile> classDependencyResolver;
+
+    @Test
+    public void concurrentResolve() throws IOException {
+        final Set<ClassName> resolved = classDependencyResolver.resolve(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"));
+
+        Assert.assertTrue(resolved != null);
+        Assert.assertTrue(!resolved.isEmpty());
+        Assert.assertEquals(1, resolved.size());
+        Assert.assertEquals(new ClassName("org.primefaces.model.TreeNode"), resolved.iterator().next());
+    }
 }

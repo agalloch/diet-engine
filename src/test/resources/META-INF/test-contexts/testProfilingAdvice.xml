@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:META-INF/common.xml" />
+
+    <bean id="classStreamResolver" class="org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver"/>
+    <bean id="sourceDependencyResolver" class="org.codarama.diet.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
+
+    <bean id="indexedMinimizationStrategy" class="org.codarama.diet.minimization.impl.IndexedMinimizationStrategy">
+        <property name="index" ref="modeShapeIndex"/>
+        <property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+        <property name="classDependencyResolver" ref="classStreamResolver"/>
+    </bean>
+
+    <bean id="modeShapeIndex" class="org.codarama.diet.index.impl.ModeShapeLibraryIndex" factory-method="withConfig">
+        <constructor-arg type="java.lang.String" value="indexConfig.json"/>
+    </bean>
+
+    <bean id="indexingAspect" class="org.codarama.diet.event.aop.IndexingAspect"/>
+    <bean id="minimizationAspect" class="org.codarama.diet.event.aop.MinimizationAspect"/>
+    <bean id="resolutionAspect" class="org.codarama.diet.event.aop.ResolutionAspect"/>
+
+    <bean id="profilingAdvice" class="org.codarama.diet.event.aop.ProfilingAdvice">
+        <property name="eventBus" ref="statusUpdateEventBus"/>
+    </bean>
+
+    <bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+</beans>

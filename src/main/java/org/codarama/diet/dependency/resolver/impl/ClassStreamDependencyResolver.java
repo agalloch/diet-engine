@@ -1,15 +1,20 @@
 package org.codarama.diet.dependency.resolver.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.bcel.classfile.*;
+import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.event.model.ClassDependencyResolutionEndEvent;
+import org.codarama.diet.event.model.ClassDependencyResolutionStartEvent;
 import org.codarama.diet.model.ClassName;
 import org.codarama.diet.model.ClassStream;
 import org.codarama.diet.util.Java;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Resolves the dependencies of {@link org.codarama.diet.model.ClassStream} which is essentially a byte stream.

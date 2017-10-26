@@ -1,7 +1,12 @@
 package org.codarama.diet.minimization.impl;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
+import org.codarama.diet.component.ListenableComponent;
 import org.codarama.diet.dependency.resolver.DependencyResolver;
+import org.codarama.diet.event.model.MinimizationEndEvent;
+import org.codarama.diet.event.model.MinimizationEvent;
+import org.codarama.diet.event.model.MinimizationStartEvent;
 import org.codarama.diet.index.LibraryIndex;
 import org.codarama.diet.minimization.MinimizationStrategy;
 import org.codarama.diet.model.ClassName;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Required;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 
 /**
@@ -32,6 +38,7 @@ public class IndexedMinimizationStrategy implements MinimizationStrategy<SourceF
     @Override
     public Set<ClassStream> minimize(Set<SourceFile> sources, Set<JarFile> libraries) throws IOException {
         final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
+
         index.index(libraries);
 
         final Set<ClassStream> result = Sets.newHashSet();

@@ -1,6 +1,6 @@
 __Status__:
 [![Build Status](https://travis-ci.org/Codarama/diet-engine.svg?branch=master)](https://travis-ci.org/Codarama/diet-engine)
-[![Coverage Status](https://coveralls.io/repos/Codarama/Diet/badge.png)](https://coveralls.io/r/Codarama/Diet)
+[![Coverage Status](https://coveralls.io/repos/github/Codarama/diet-engine/badge.svg?branch=master)](https://coveralls.io/github/Codarama/diet-engine?branch=master)
 [![Static Code Analysis Status](https://scan.coverity.com/projects/6324/badge.svg)](https://scan.coverity.com/projects/codarama-diet-engine)
 [![Dependency Status](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7/badge.svg?style=flat)](https://www.versioneye.com/user/projects/557ed6bc61626613800000f7)
 
@@ -62,18 +62,11 @@ Diet can notify you for updates on what it is currently doing. For instanse if y
 resolving the dependencies of a binary class you can:
 
 ```java
-ListenerRegistrar.listeners(new Object() {
-			
-    @Subscribe
-	public void listenOnStart(ClassDependencyResolutionStartEvent e) {
-	    // this will be called when the resolution starts
-	}
-			
-	@Subscribe
-	public void listenOnEnd(ClassDependencyResolutionEndEvent e) {
-	    // this will be called when the resolution ends
-	}
-}).register();
+ListenerRegistrar.register(new EventListener<ComponentEvent>() {
+    public void on(ComponentEvent event) {
+        // will be called on any event
+    }
+});
 ```
 
 There is a whole hierarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.

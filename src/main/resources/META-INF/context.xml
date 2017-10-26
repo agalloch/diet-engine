@@ -2,50 +2,56 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
-       
-        http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		
-		http://www.springframework.org/schema/context 
-		http://www.springframework.org/schema/context/spring-context-3.1.xsd"
-		
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+
        default-lazy-init="true">
 
 
-	<context:annotation-config />
-	
-	<import resource="classpath:META-INF/components/service.xml" />
-	<import resource="classpath:META-INF/components/concurrent.xml" />
-	
-	<context:component-scan base-package="org.codarama"/>
-	
-	<bean id="workDir" class="java.lang.String" factory-method="valueOf">
-		<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
-	</bean>
-	
-	<bean id="mandatoryWorkDir" class="java.lang.String" factory-method="valueOf">
-		<constructor-arg value="${jar.mandatory.extraction.dir}" type="java.lang.Object"/>
-	</bean>
-	
-	<bean id="defaultOutJarName" class="java.lang.String" factory-method="valueOf">
-		<constructor-arg value="${jar.facade.name}" type="java.lang.Object"/>
-	</bean>
-	
-	<bean id="defaultOutJar" class="java.lang.String" factory-method="valueOf">
-		<constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
-	</bean>
-	
-	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
-	
-	<bean id="listenableComponent" class="org.codarama.diet.component.ListenableComponent" abstract="true">
-		<property name="eventBus" ref="statusUpdateEventBus"/>
-	</bean>
-	
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:config.properties"/>
-	</bean>
-	
+    <context:spring-configured/>
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy/>
+
+    <import resource="classpath:META-INF/components/service.xml"/>
+    <import resource="classpath:META-INF/components/concurrent.xml"/>
+
+    <context:component-scan base-package="org.codarama"/>
+
+    <bean id="workDir" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
+    </bean>
+
+    <bean id="mandatoryWorkDir" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="${jar.mandatory.extraction.dir}" type="java.lang.Object"/>
+    </bean>
+
+    <bean id="defaultOutJarName" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="${jar.facade.name}" type="java.lang.Object"/>
+    </bean>
+
+    <bean id="defaultOutJar" class="java.lang.String" factory-method="valueOf">
+        <constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
+    </bean>
+
+    <bean id="statusUpdateEventBus" class="com.google.common.eventbus.AsyncEventBus">
+        <constructor-arg ref="eventBusExecutor"/>
+    </bean>
+
+    <bean id="eventBusExecutor" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+        <constructor-arg value="1"/>
+    </bean>
+
+    <bean id="listenableComponent" class="org.codarama.diet.component.ListenableComponent" abstract="true">
+        <property name="eventBus" ref="statusUpdateEventBus"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:config.properties"/>
+    </bean>
+
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>

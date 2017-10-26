@@ -1,6 +1,7 @@
 package org.codarama.diet.model;
 
 import org.apache.bcel.classfile.ClassParser;
+import org.codarama.diet.dependency.resolver.DependencyResolver;
 import org.codarama.diet.dependency.resolver.impl.ClassStreamDependencyResolver;
 import org.codarama.diet.model.marker.Packagable;
 import org.codarama.diet.model.marker.Resolvable;
@@ -100,7 +101,7 @@ public class ClassStream implements Resolvable, Packagable {
      * */
     public Set<ClassName> dependencies() {
         try {
-            return Components.STREAM_DEPENDENCY_RESOLVER.<ClassStreamDependencyResolver>getInstance().resolve(this);
+            return Components.STREAM_DEPENDENCY_RESOLVER.<DependencyResolver<ClassStream>>getInstance().resolve(this);
         } catch (IOException e) {
             throw new RuntimeException("could not get dependencies of: " + this, e);
         }

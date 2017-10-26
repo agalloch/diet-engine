@@ -1,50 +1,76 @@
 package org.codarama.diet.api;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.io.Resources;
+import org.codarama.diet.api.reporting.listener.EventListener;
+import org.codarama.diet.component.ListenableComponent;
+import org.codarama.diet.event.model.*;
+import org.codarama.diet.test.util.suite.IntegrationTest;
+import org.codarama.diet.util.Components;
+import org.codarama.diet.util.Tokenizer;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.io.IOException;
 import java.net.URL;
 
-import org.junit.Assert;
-
-import org.codarama.diet.event.model.OperationStartEvent;
-import org.codarama.diet.test.util.suite.IntegrationTest;
-import org.codarama.diet.util.Tokenizer;
-import org.junit.Test;
-
-import com.google.common.eventbus.Subscribe;
-import com.google.common.io.Resources;
-import org.junit.experimental.categories.Category;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @Category(IntegrationTest.class)
-public class RegistrarTest implements IntegrationTest{
+public class RegistrarTest implements IntegrationTest {
 
-	@Test
-	public void jarExtractionUpdateCallCount() throws IOException {
-		final Listener callCountListener = new Listener();
+    private final EventBus statusUpdateEventBus = Components.EVENT_BUS.getInstance();
 
-		ListenerRegistrar.listeners(callCountListener).register();
+    @Test
+    public void parentSubscriptionShouldAlsoFireOnChildren() throws IOException, InterruptedException {
+        final SupertypeListener supertypeListener = new SupertypeListener();
+        ListenerRegistrar.register(supertypeListener);
 
-		DefaultMinimizer.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-				.libs(toPath(Resources.getResource("test-classes/test-lib-dir"))).minimize();
+        statusUpdateEventBus.post(new MinimizationStartEvent("subStartTest", null));
+        statusUpdateEventBus.post(new MinimizationEndEvent("subEndTest", null));
+        statusUpdateEventBus.post(new MinimizationEvent("superTest", null));
 
-		Assert.assertTrue(callCountListener.getCallCount() >= 3); // this is not too correct as the event bus is in
-																	// another thread and call count may vary
-	}
+        // XXX not ideal, but when testing API classes we can't inject a sync event bus
+        // currently the async event bus doesn't post everything when expected
+        Thread.sleep(2000);
 
-	private String toPath(URL uri) {
-		return Tokenizer.delimiter(":").tokenize(uri.toString()).lastToken();
-	}
+        assertTrue("Listener not called for start subtype", supertypeListener.gotStartSubtype);
+        assertTrue("Listener not called for end subtype", supertypeListener.gotEndSubtype);
+        assertTrue("Listener not called for supertype", supertypeListener.gotSupertype);
+        assertTrue("3 calls expected, but got: " + supertypeListener.callCount, supertypeListener.callCount == 3);
+    }
 
-	public static class Listener {
+    private String toPath(URL uri) {
+        return Tokenizer.delimiter(":").tokenize(uri.toString()).lastToken();
+    }
 
-		private int callCount = 0;
+    private static class SupertypeListener implements EventListener<MinimizationEvent> {
 
-		@Subscribe
-		public void listen(OperationStartEvent u) {
-			callCount++;
-		}
+        private int callCount = 0;
 
-		public int getCallCount() {
-			return callCount;
-		}
-	}
+        private boolean gotSupertype = false;
+        private boolean gotStartSubtype = false;
+        private boolean gotEndSubtype = false;
+
+        @Override
+        public void on(MinimizationEvent event) {
+            callCount++;
+            if (!MinimizationEvent.class.isAssignableFrom(event.getClass())) {
+                fail("Received event of type: " + event.getClass() + ", when not subscribed for this type");
+            }
+            if (event instanceof MinimizationStartEvent) {
+                gotStartSubtype = true;
+            } else if (event instanceof MinimizationEndEvent) {
+                gotEndSubtype = true;
+            } else {
+                gotSupertype = true;
+            }
+        }
+    }
 }

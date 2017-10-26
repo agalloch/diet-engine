@@ -1,6 +1,6 @@
 package org.codarama.diet.test.util.suite;
 
-import org.codarama.diet.api.DefaultMinimizerTest;
+import org.codarama.diet.api.IndexedMinimizerTest;
 import org.codarama.diet.api.RegistrarTest;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
@@ -14,8 +14,8 @@ import org.junit.runners.Suite;
 @RunWith(Categories.class)
 @Categories.IncludeCategory(IntegrationTest.class)
 @Suite.SuiteClasses({
-        DefaultMinimizerTest.class,
-        RegistrarTest.class
+        RegistrarTest.class,
+        IndexedMinimizerTest.class
 })
 public class IntegrationTestsSuite {
 }
